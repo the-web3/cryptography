@@ -1,5 +1,7 @@
 # 人人都能看懂的密码学
 
+本书的目标是将苦涩难懂的密码学简单化，让更多人能够读懂密码学，对密码学产生兴趣。
+
 ### [第一章：序言](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
 ### [第二章：密码学发展简史](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/history/README.md)
