@@ -2,13 +2,13 @@
 
 ### [第一章：序言](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
-### [第二章：密码学发展简史](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+### [第二章：密码学发展简史](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/history/README.md)
 
-### [第三章：对称加密和非对称加密](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+### [第三章：对称加密和非对称加密](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/encryptType/README.md)
 
-### [第四章：分组密码模式](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+### [第四章：分组密码模式](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/blockCipher/README.md)
 
-### [第五章：常用的对称加密算法](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+### [第五章：常用的对称加密算法](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/symmetricEncryptionAlgorithm/README.md)
 
 ### [第六章：常用的非对称加密算法](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
