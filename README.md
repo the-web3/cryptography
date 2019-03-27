@@ -41,7 +41,7 @@
 
 .： 
     ![.： 
-](https://github.com/guoshijiang/blockchain-wallet/blob/master/img/weixin.png)
+](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/img/weichat.png)
 
 
 ### 关于本书
