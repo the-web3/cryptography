@@ -1,6 +1,6 @@
 # 人人都能看懂的密码学
 
-本书的目标是将苦涩难懂的密码学简单化，让更多人能够读懂密码学，对密码学产生兴趣。
+本书的目标是将苦涩难懂的密码学简单化，让更多人能够读懂密码学，对密码学产生兴趣。阅读本书，需有一定的数学理论基础。
 
 ### [第一章：序言](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
@@ -35,3 +35,15 @@
 ### [第十六章：量子密码](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
 ### [第十七章：关于本书](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+
+
+### 有兴趣的朋友可以加笔者的微信，我们一起交流密码学技术
+
+.： 
+    ![.： 
+](https://github.com/guoshijiang/blockchain-wallet/blob/master/img/weixin.png)
+
+
+### 关于本书
+
+目前本书在写作阶段，书籍的版本暂设为V1.0.0版，本书将一直跟随密码学技术的发展，随时会更新,本书的内容将会在笔者的博客上同步更新，可能内容上不太一致，希望读者多多包涵。
