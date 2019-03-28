@@ -12,15 +12,15 @@
 
 ### [第五章：常用的对称加密算法](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/symmetricEncryptionAlgorithm/README.md)
 
-### [第六章：常用的非对称加密算法](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+### [第六章：常用的非对称加密算法](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/PublicKeyEncryptionAlgorithm/README.md)
 
-### [第七章：混合密码](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+### [第七章：混合密码](https://github.com/guoshijiang/Cryptography_anyone_can_understand/tree/master/MixPassword/README.md)
 
-### [第八章：单向散列函数](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+### [第八章：单向散列函数](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/Hash/README.md)
 
-### [第九章：消息认证码](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+### [第九章：消息认证码](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/MAC/README.md)
 
-### [第十章：数字签名](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+### [第十章：数字签名](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/DigitalSignature/README.md)
 
 ### [第十一章：数字证书（PKI体系）](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
