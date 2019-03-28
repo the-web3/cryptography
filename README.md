@@ -34,7 +34,9 @@
 
 ### [第十六章：量子密码](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
-### [第十七章：关于本书](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+### [第十七章：国密](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+
+### [关于本书](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
 
 ### 有兴趣的朋友可以加笔者的微信，我们一起交流密码学技术
