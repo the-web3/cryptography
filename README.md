@@ -10,6 +10,8 @@
 
 ### [第四章：单向散列函数 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/Hash/README.md)
 
+### [第N章：国密 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/china/README.md)
+
 ### [关于本书](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
 
