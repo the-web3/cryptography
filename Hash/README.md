@@ -27,6 +27,7 @@ MD5：是RSA数据安全公司开发的一种单向散列算法，MD5被广泛�
 
 2）先认识四个线性函数(&是与,|是或,~是非,^是异或)
 
+```
 F(X,Y,Z)=(X&Y)|((~X)&Z)
 G(X,Y,Z)=(X&Z)|(Y&(~Z))
 H(X,Y,Z)=X^Y^Z
@@ -37,8 +38,12 @@ FF(a,b,c,d,Mj,s,ti)表示a=b+((a+F(b,c,d)+Mj+ti)<<<s)
 GG(a,b,c,d,Mj,s,ti)表示a=b+((a+G(b,c,d)+Mj+ti)<<<s)
 HH(a,b,c,d,Mj,s,ti)表示a=b+((a+H(b,c,d)+Mj+ti)<<<s)
 II(a,b,c,d,Mj,s,ti)表示a=b+((a+I(b,c,d)+Mj+ti)<<<s)
+```
+
 4）四轮运算
  第一轮
+ 
+```
 a=FF(a,b,c,d,M0,7,0xd76aa478)
 b=FF(d,a,b,c,M1,12,0xe8c7b756)
 c=FF(c,d,a,b,M2,17,0x242070db)
@@ -55,8 +60,11 @@ a=FF(a,b,c,d,M12,7,0x6b901122)
 b=FF(d,a,b,c,M13,12,0xfd987193)
 c=FF(c,d,a,b,M14,17,0xa679438e)
 d=FF(b,c,d,a,M15,22,0x49b40821)
+```
 
 第二轮
+
+```
 a=GG(a,b,c,d,M1,5,0xf61e2562)
 b=GG(d,a,b,c,M6,9,0xc040b340)
 c=GG(c,d,a,b,M11,14,0x265e5a51)
@@ -73,8 +81,11 @@ a=GG(a,b,c,d,M13,5,0xa9e3e905)
 b=GG(d,a,b,c,M2,9,0xfcefa3f8)
 c=GG(c,d,a,b,M7,14,0x676f02d9)
 d=GG(b,c,d,a,M12,20,0x8d2a4c8a)
+```
 
 第三轮
+
+```
 a=HH(a,b,c,d,M5,4,0xfffa3942)
 b=HH(d,a,b,c,M8,11,0x8771f681)
 c=HH(c,d,a,b,M11,16,0x6d9d6122)
@@ -91,8 +102,11 @@ a=HH(a,b,c,d,M9,4,0xd9d4d039)
 b=HH(d,a,b,c,M12,11,0xe6db99e5)
 c=HH(c,d,a,b,M15,16,0x1fa27cf8)
 d=HH(b,c,d,a,M2,23,0xc4ac5665)
+```
 
 第四轮
+
+```
 a=II(a,b,c,d,M0,6,0xf4292244)
 b=II(d,a,b,c,M7,10,0x432aff97)
 c=II(c,d,a,b,M14,15,0xab9423a7)
@@ -109,6 +123,8 @@ a=II(a,b,c,d,M4,6,0xf7537e82)
 b=II(d,a,b,c,M11,10,0xbd3af235)
 c=II(c,d,a,b,M2,15,0x2ad7d2bb)
 d=II(b,c,d,a,M9,21,0xeb86d391)
+```
+
 5）每轮循环后，将A，B，C，D分别加上a，b，c，d，然后进入下一循环。
 
 ### 3.MD5 用途
