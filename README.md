@@ -8,6 +8,8 @@
 
 ### [第三章：对称加密和非对称加密](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/encryptType/README.md)
 
+### [第四章：单向散列函数 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/Hash/README.md)
+
 ### [关于本书](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
 
