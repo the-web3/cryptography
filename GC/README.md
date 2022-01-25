@@ -39,8 +39,21 @@ GMW 协议由 Goldreich 等人提出，基于混淆电路（Garbled Circuit）�
 
 GMW 协议的目标函数由异或门和与门、非门组成。非门的输出值是输入值的反，输入为 1 则输出为 0，反之输入为 0 则输出为 1
 
-算法流程如下：
+与门的真值表如下图所示：
 
+.： 
+    ![.： 
+](https://github.com/guoshijiang/cryptography/blob/master/img/new_gmw1.jpg)
+
+
+异或门及其真值表如下图所示：
+
+.： 
+    ![.： 
+](https://github.com/guoshijiang/cryptography/blob/master/img/new_gmw2.png)
+
+
+算法流程如下：
 
 
 
