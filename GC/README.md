@@ -30,20 +30,20 @@ BGW 协议也是支持多方的安全计算协议，BGW 协议基于 Shamir(t, n
 
 .： 
     ![.： 
-](https://github.com/guoshijiang/cryptography/blob/master/img/bgw2.png)
+](https://github.com/guoshijiang/cryptography/blob/master/img/bgw2.jpg)
 
 
 对于异或门：由于 Shamir 具有加法同态性，因此
 
 .： 
     ![.： 
-](https://github.com/guoshijiang/cryptography/blob/master/img/bgw3.png)
+](https://github.com/guoshijiang/cryptography/blob/master/img/bgw3.jpg)
 
 假设 ci = ai xor bi，则 c(i) = a(i) xor b(i) ，而 a(i) = ai和 bi =b(i) 都由 Pi 掌握，因此 Pi 可以本地计算出 ci = ai xor bi 。当所有计算完成后，每个参与者Pi公布自己计算出的 c(i) ，即可恢复出 c(x) 和 c(0)。 
 
 .： 
     ![.： 
-](https://github.com/guoshijiang/cryptography/blob/master/img/bgw4.png)
+](https://github.com/guoshijiang/cryptography/blob/master/img/bgw4.jpg)
 
 
 对于与门，和之前叙述过的基于 Shamir(t, n)门限共享机制的多方乘法计算相同，只是 BGW 是在有限域 F2 上。每个参与者 Pi 计算 ai * bi ，接着每个Pi独自选取次数为 t 次的随机多项式 hi(x) ，且满足 hi(x) = di ,1 ≤ t ≤ n ， t < n / 2 。向各个参与者分配 di ，且 cij = hi(x) , 所有参与者分配结束后，Pi 掌握了信息 c1i, c2i ... cni ，同时再利用公开的重组向量1, ... n， 
