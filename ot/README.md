@@ -89,6 +89,7 @@ Alice 拥有 n 个秘密消息 m1, m2, m3 ... mn, 并且同意不经意传输其
 - 计算点（x1, y1）= biM, (x2, y2) = biK(如果 x2=0, 则重新选择 bi, 直到 x2 不等于 0)
 - 计算 si = ai * x1, 再随机选取密文 s1-i  ∈ Fq, 最后将密文对（s0, s1）和 (x1, y1) 发送给 Alice
 
+
 (3).由于 Alice 知道私钥 p, 因此可以从密文（s0, s1）中计算出明文对（a0, a1),具体的计算过程如下
 
 - 利用私钥 p 和点（x1, y1）计算 (X2, y2) = p(x1, y1);
@@ -97,8 +98,9 @@ Alice 拥有 n 个秘密消息 m1, m2, m3 ... mn, 并且同意不经意传输其
 - 发送 c0 和 c1 给 Bob
 
 (4) Bob 由于知道 aj, 因此可以通过计算 cj 的 i 次方异或 Li 恢复出 ci 的内容，具体执行过程如下：
-
-
+.： 
+    ![.： 
+](https://github.com/guoshijiang/cryptography/blob/master/img/eccot4.jpeg)
 
 #### 3.基于 NTRU 的不经意传输
 
