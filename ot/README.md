@@ -70,6 +70,28 @@ Alice 拥有 n 个秘密消息 m1, m2, m3 ... mn, 并且同意不经意传输其
     ![.： 
 ](https://github.com/guoshijiang/cryptography/blob/master/img/rsaot.jpeg)
 
+##### 2.1.协议的安全性分析
+
+协议中密文的安全基于 RSA 加密算法的安全， 根据前面章节中对 RSA 加密算法的介绍， 对于第三方在没有 Alice 解密密钥的前提下， 无法通过 Alice 与 Bob 的交互数据中获取到消息 M1 到 Mn。
+
+###### 接收方的隐私保护
+
+根据协议的执行过程以及 RSA 加密算法的安全性， 显然只有 Alice 能够计算
+.： 
+    ![.： 
+](https://github.com/guoshijiang/cryptography/blob/master/img/rsabjy01.png)
+
+但是，Si 是由 Bob 随机选取的， 对 Alice 是保密的， Alice 无法根据 Zi 知道 Zi 是由哪个消息计算得来, 因此 Alice 无法获知 Bob 的选择。 保证了 Bob 选择的隐私性。
+
+###### 发送方的隐私保护
+
+在这个协议中由于 Bob 没有 Alice 的解密私钥 d, 这里 e = 1 mod Φn， 根据 RSA 算法的安全性， Bob 不能通过任一加密密文
+.： 
+    ![.： 
+](https://github.com/guoshijiang/cryptography/blob/master/img/rsabjy002.png)
+
+获取消息Mi，i=1，2，3，... n； 因此 Bob 无法获得其他 n - k 个消息， 这是因为 Alice仅仅解密了 k 个秘密消息。
+
 
 #### 3.基于椭圆曲线的不经意传输
 
