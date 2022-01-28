@@ -2,33 +2,39 @@
 
 本书的目标是将苦涩难懂的密码学简单化，让更多人能够读懂密码学，对密码学产生兴趣。阅读本书，需有一定的数学理论基础。书中的密码将以图解和简单易懂的语言叙述密码学的逻辑。
 
-### [第一章：序言](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
+### [序言](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
-### [第二章：密码学发展简史](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/history/README.md)
+### [密码学发展简史](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/history/README.md)
 
-### [第三章：对称加密和非对称加密](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/encryptType/README.md)
+### [对称加密和非对称加密](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/encryptType/README.md)
 
-### [第四章：单向散列函数 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/Hash/README.md)
+### [单向散列函数 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/Hash/README.md)
 
-### [第X章：PKI公钥基础设施 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/PKI/README.md)
+### [PKI公钥基础设施 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/PKI/README.md)
 
-### [第M章：秘密共享 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/share/README.md)
+### [秘密共享 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/share/README.md)
 
-### [第N章：国密 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/china/README.md)
+### [MPC 多方计算概述 ](https://github.com/guoshijiang/cryptography/blob/master/MPC/README.md)
+
+### [不经意传输 ](https://github.com/guoshijiang/cryptography/blob/master/ot/README.md)
+
+### [混淆电路 ](https://github.com/guoshijiang/cryptography/blob/master/GC/README.md)
+
+### [国密 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/china/README.md)
 
 ### [关于本书](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
 
 ### 有兴趣的朋友可以加笔者的微信，笔者拉您入密码学技术交流群，我们一起交流密码学技术
-
 .： 
     ![.： 
 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/img/weichat.png)
 
 
 ### 请作者喝咖啡
-
-![WechatIMG16](https://user-images.githubusercontent.com/19474106/119257253-00393f00-bbf7-11eb-8904-31bb7b35d54d.jpeg)
+.： 
+    ![.： 
+](https://user-images.githubusercontent.com/19474106/119257253-00393f00-bbf7-11eb-8904-31bb7b35d54d.jpeg)
 
 
 ### 关于本书
