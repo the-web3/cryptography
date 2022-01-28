@@ -16,15 +16,17 @@
 
 ### [第七章：PKI公钥基础设施 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/PKI/README.md)
 
-### [第八章：秘密共享 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/share/README.md)
+### [第八章：数字签名 ](https://github.com/guoshijiang/cryptography/blob/master/DigitalSignature/README.md)
 
-### [第九章：MPC 多方计算概述 ](https://github.com/guoshijiang/cryptography/blob/master/MPC/README.md)
+### [第九章：秘密共享 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/share/README.md)
 
-### [第十章：不经意传输 ](https://github.com/guoshijiang/cryptography/blob/master/ot/README.md)
+### [第十章：MPC 多方计算概述 ](https://github.com/guoshijiang/cryptography/blob/master/MPC/README.md)
 
-### [第十一章：混淆电路 ](https://github.com/guoshijiang/cryptography/blob/master/GC/README.md)
+### [第十一章：不经意传输 ](https://github.com/guoshijiang/cryptography/blob/master/ot/README.md)
 
-### [第十二章：国密 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/china/README.md)
+### [第十二章：混淆电路 ](https://github.com/guoshijiang/cryptography/blob/master/GC/README.md)
+
+### [第十三章：国密 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/china/README.md)
 
 ### [关于本书](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
@@ -37,4 +39,4 @@
 
 ### 关于本书
 
-目前本书在写作阶段，书籍的版本暂设为V1.0.0版，本书将一直跟随密码学技术的发展，随时会更新,本书的内容将会在笔者的博客和公众号上同步更新，可能内容上不太一致，希望读者多多包涵。由于编写本书的作者水平有限，书中有什么质疑的地方，大家可以提出来一起讨论。
+目前本书在写作阶段，书籍的版本暂设为 V1.0.1 版，本书将一直跟随密码学技术的发展，随时会更新, 本书的内容将会在笔者的博客和公众号上同步更新，可能内容上不太一致，希望读者多多包涵。由于编写本书的作者水平有限，书中有什么质疑的地方，大家可以提出来一起讨论。
