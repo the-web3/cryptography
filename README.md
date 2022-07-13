@@ -26,9 +26,9 @@
 
 ### [第十二章：混淆电路 ](https://github.com/guoshijiang/cryptography/blob/master/GC/README.md)
 
-### [第十三章： 具体的 MPC 算法和代码实现 ]()
+### [第十三章： 具体的 MPC 算法和代码实现 ](https://github.com/guoshijiang/cryptography/blob/master/MPC/mpc-implementation.md)
 
-### [第十四章：零知识证明简介]()
+### [第十四章：零知识证明简介](https://github.com/guoshijiang/cryptography/blob/master/zkp/zkp_introduce.md)
 
 ### [第十五章：STARK 与 SNARK]()
 
