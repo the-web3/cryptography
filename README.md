@@ -26,7 +26,7 @@
 
 ### [第十二章：混淆电路 ](https://github.com/guoshijiang/cryptography/blob/master/GC/README.md)
 
-### [第十三章：主流的 MPC 算法和代码实现 ]()
+### [第十三章： MPC 算法和代码实现 ]()
 
 ### [第十四章：零知识证明简介]()
 
