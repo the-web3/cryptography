@@ -6,7 +6,7 @@
 
 斯坦福教授 Dan Boneh 的讲座视频时，说了一个描述零知识证明的生动例子：Dan 教授试图向幼儿园的孩子们介绍零知识证明，使用游戏——“沃尔多在哪里”。Waldo 在哪里是一款经典的棋盘游戏，要求玩家在一张挤满了人的图片中找到一个特定的角色——Waldo。如下图所示：
 
-[100.jpeg](https://github.com/guoshijiang/cryptography/blob/master/img/100.jpeg)
+![100.jpeg](https://github.com/guoshijiang/cryptography/blob/master/img/100.jpeg)
 
 如何使用零知识证明来证明你知道 Waldo 在哪里？
 
