@@ -26,7 +26,29 @@
 
 ### [第十二章：混淆电路 ](https://github.com/guoshijiang/cryptography/blob/master/GC/README.md)
 
-### [第十三章：国密 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/china/README.md)
+### [第十三章：主流的 MPC 算法和代码实现 ]()
+
+### [第十四章：零知识证明简介]()
+
+### [第十五章：STARK 与 SNARK]()
+
+### [第十六章：Groth16 算法介绍和代码实现]()
+
+### [第十七章：Sonic 算法介绍和代码实现]()
+
+### [第十八章：Fractal 算法介绍和代码实现]()
+
+### [第十九章：Halo 算法介绍和代码实现]()
+
+### [第二十章：SuperSonic 算法介绍和代码实现]()
+
+### [第二十一章：Marlin 算法介绍和代码实现]()
+
+### [第二十二章：Plonk 算法介绍和代码实现]()
+
+### [第二十三章：Zk-Stark 算法介绍和代码实现]()
+
+### [第二十三章：国密 ](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/china/README.md)
 
 ### [关于本书](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/preface/README.md)
 
