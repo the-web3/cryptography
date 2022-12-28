@@ -1,13 +1,13 @@
 # These are supported funding model platforms
 
-github:  [wenwoha, gingernet, chaineye]
-patreon: gingernet
-open_collective: gingernet
-ko_fi: gingernet
-tidelift: gingernet
-community_bridge: gingernet
-liberapay: gingernet
-issuehunt: gingernet
-otechie: gingernet
-lfx_crowdfunding:  cloud-gingernet
+github:  [https://github.com/wenwoha, https://github.com/gingernet ]
+patreon: https://github.com/wenwoha
+open_collective: https://github.com/wenwoha
+ko_fi: https://github.com/wenwoha
+tidelift: https://github.com/wenwoha
+community_bridge: https://github.com/wenwoha
+liberapay: https://github.com/wenwoha
+issuehunt: https://github.com/wenwoha
+otechie: https://github.com/wenwoha
+lfx_crowdfunding:  https://github.com/wenwoha
 custom: ['https://www.wenwoha.com/', 'https://chaineye.info/', 'https://gingernet.vip/']
