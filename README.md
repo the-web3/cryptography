@@ -63,10 +63,9 @@
 - telegram: @shijiangguo
 - Twitter: @seek_web3
 
-### 赞赏
+### 赞助本教程
 
-
-ETH: 0xa424Db4D52D8f12Bb0ea4fbe2dEAb6cf7e9cBC87
-ERC20: 0xa424Db4D52D8f12Bb0ea4fbe2dEAb6cf7e9cBC87
-Layer2: 0xa424Db4D52D8f12Bb0ea4fbe2dEAb6cf7e9cBC87
+- ETH: 0xa424Db4D52D8f12Bb0ea4fbe2dEAb6cf7e9cBC87
+- ERC20: 0xa424Db4D52D8f12Bb0ea4fbe2dEAb6cf7e9cBC87
+- Layer2: 0xa424Db4D52D8f12Bb0ea4fbe2dEAb6cf7e9cBC87
 
