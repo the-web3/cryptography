@@ -1,0 +1,857 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="本书的目标是将苦涩难懂的密码学简单化，让更多人能够读懂密码学，对密码学产生兴趣。阅读本书，需有一定的数学理论基础。书中的密码将以图解和简单易懂的语言叙述密码学的逻辑。">
+      
+      
+      
+        <link rel="canonical" href="https://crypt.wenwoha.com/MAC/index.html">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>第六章：消息认证码 - 人人都能看懂的密码学</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#7e56c2">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="人人都能看懂的密码学" class="md-header__button md-logo" aria-label="人人都能看懂的密码学" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            人人都能看懂的密码学
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第六章：消息认证码
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/guoshijiang/cryptography/" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="人人都能看懂的密码学" class="md-nav__button md-logo" aria-label="人人都能看懂的密码学" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    人人都能看懂的密码学
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/guoshijiang/cryptography/" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../preface/index.html" class="md-nav__link">
+        第一章：序言
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../history/index.html" class="md-nav__link">
+        第二章：密码学发展简史
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../encryptType/index.html" class="md-nav__link">
+        第三章：对称加密和非对称加密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Hash/index.html" class="md-nav__link">
+        第四章：单向散列函数
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../blockCipher/index.html" class="md-nav__link">
+        第五章：分组加密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          第六章：消息认证码
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="index.html" class="md-nav__link md-nav__link--active">
+        第六章：消息认证码
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    一. 消息认证码简介
+  </a>
+  
+    <nav class="md-nav" aria-label="一. 消息认证码简介">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-mac" class="md-nav__link">
+    1. MAC 函数
+  </a>
+  
+    <nav class="md-nav" aria-label="1. MAC 函数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11mac" class="md-nav__link">
+    1.1.MAC 函数的安全性要求如下
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hmac" class="md-nav__link">
+    二. HMAC算法
+  </a>
+  
+    <nav class="md-nav" aria-label="二. HMAC算法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1hmac" class="md-nav__link">
+    1.HMAC算法介绍
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2hmac" class="md-nav__link">
+    2.HMAC 的安全性
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#umac" class="md-nav__link">
+    三. UMAC算法
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    四.总结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PKI/index.html" class="md-nav__link">
+        第七章：PKI公钥基础设施
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DigitalSignature/index.html" class="md-nav__link">
+        第八章：数字签名
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../share/index.html" class="md-nav__link">
+        第九章：秘密共享
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MPC/index.html" class="md-nav__link">
+        第十章：MPC 多方计算概述
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ot/index.html" class="md-nav__link">
+        第十一章：不经意传输
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GC/index.html" class="md-nav__link">
+        第十二章：混淆电路
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MPC/mpc-implementation.html" class="md-nav__link">
+        第十三章： 具体的 MPC 算法和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/zkp_introduce.html" class="md-nav__link">
+        第十四章：零知识证明简介
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/app.html" class="md-nav__link">
+        第十五章：零知识证明应用
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/groth16.html" class="md-nav__link">
+        第十六章：Groth16 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十七章：Sonic 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十八章：Fractal 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十九章：Halo 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十章：SuperSonic 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十一章：Marlin 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十二章：Plonk 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十三章：Zk-Stark 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../china/index.html" class="md-nav__link">
+        第二十三章：国密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../preface/index.html" class="md-nav__link">
+        关于本书
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <a href="https://github.com/guoshijiang/cryptography/edit/master/MAC/README.md" title="编辑此页" class="md-content__button md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+<h1 id="_1">第六章：消息认证码</h1>
+<p>在密码学中，消息认证码（英语：Message authentication code，缩写为MAC），又译为消息鉴别码、文件消息认证码、讯息鉴别码、信息认证码，是经过特定算法后产生的一小段信息，检查某段消息的完整性，以及作身份验证。它可以用来检查在消息传递过程中，其内容是否被更改过，不管更改的原因是来自意外或是蓄意攻击。同时可以作为消息来源的身份验证，确认消息的来源。</p>
+<h3 id="_2">一. 消息认证码简介</h3>
+<p>消息认证实际上是对消息本身产生一个冗余的信息-MAC消息认证码, 消息认证码是利用密钥对要认证的消息产生新的数据块并对数据块加密生成的。它对于要保护的信息来说是唯一和一一对应的。因此可以有效地保护消息的完整性。以及实现发送方消息的不可抵赖和不能伪造。</p>
+<h4 id="1-mac">1. MAC 函数</h4>
+<p>消息认证码(MAC)函数是消息和密钥的公开函数, 它产生定长的值, 以该值作为认证码。 MAC 函数有如下形式的定义:MAC = Ck(M), 其中Ｍ为一个变长消息, K是收发双方共享的密钥, C(k)M是定长的认证码。</p>
+<h5 id="11mac">1.1.MAC 函数的安全性要求如下</h5>
+<ul>
+<li>攻击者已知 Ｍ 和 Ck(M), 则他构造满足 Ck(M1)=Ck(M)的消息 M1 在计算上是不可行的。</li>
+<li>Ck(M) 应是均匀分布的， 即对任何随机选择的消息 M 和 M1， Ck(M1)=Ck(M)的概率是 2^-n, 其中 n 是 MAC 的比特长度。</li>
+<li>设 M1 是 M 的某个已知的变换, 即 M1=f(M). 例如: ｆ可表示逆转Ｍ的一位或多位， 那么 Ck(M1)=Ck(M) 的概率是2^-n。</li>
+</ul>
+<p>第一个要求可以防止攻击者制造出和给定 MAC 匹配的新消息。 第二个要求是为了阻止基于选择明文的穷举攻击。 最后一条要求认证算法对消息的某部分或位不应比其它部分或位更弱。</p>
+<p>目前的现状是，人们比较喜欢使用 Hash 函数来设计消息认证码，关于 Hash 函数，请去阅读单向散列函数相关的章节。原因是 Hash函数具有以下这些特征：</p>
+<ul>
+<li>一般像 MD5, SHA-1, Blake2 这样的 Hash 函数， 其软件执行速度比诸如 DES 和 AES 这样的分组密码算法要快.</li>
+<li>可利用密码 Hash 函数代码库。</li>
+<li>美国或其他国家对密码 Hash 函数没有出口限制， 而对即使是用于 Mac 的对称分组密码都有出口限制。</li>
+</ul>
+<p>Hash 函数不依赖于密钥, 所以不能将其直接用于 MAC。目前已经提出了许多将密钥加到 Hash 函数中的方案， 包括 UMAC 和 HMAC 等。 其中， HMAC 是目前最受欢迎的方案， 它被选为 IP 安全解决方案中实现 MAC 必须使用的方法， 并且其它 Internet 协议， 如安全套接协议 SSL 中也使用了 HMAC。下面我们会介绍几种常用的消息认证码算法。</p>
+<h3 id="hmac">二. HMAC算法</h3>
+<h4 id="1hmac">1.HMAC算法介绍</h4>
+<p>HMAC算法是由 H.krawcyzk, M.Bellare, R.Canetti 于1996 年提出的一种基于 Hash 函数和密钥进行消息认证的方法。 HMAC 所能提供的消息认证包括两方面的内容：</p>
+<ul>
+<li>消息完整性认证: 能够证明消息内容在传送过程中没有被修改。</li>
+<li>信源身份认证: 因为通信双方共享了认证的密钥, 接收方能够认证发送该数据的信源与所宣称的一致, 即能够可靠的确认接收的消息与发送的一致.</li>
+</ul>
+<p>RFC20 给出的 HMAC 算法的设计目标如下：</p>
+<ul>
+<li>不必修改而直接使用现有 Hash 函数, 特别地，很容易免费得到软件上执行速度较快的 Hash 函数及其代码。</li>
+<li>如果找到或者需要更快或更安全的 Hash 函数, 应能很容易地替代原来嵌入的 Hash 函数。</li>
+<li>应保持 Hash 函数原有的性能， 不能过分降低其性能。</li>
+<li>对密钥的使用和处理应较简单。</li>
+<li>如果已知嵌入的 Hash 函数的强度， 则完全可以知道认证机制抗密码分析的强度。</li>
+</ul>
+<p>设 H 是 HMAC 算法嵌入的 HASH 函数, Ｍ是 HMAC 作用的消息, 将Ｍ分组, 每个分组的长度为 b;  K 是密钥, 其长度小于或等于b， 设 K+ 是把长度小于 b 的足用 0 填充
+为 b 比特长的结果。ipad = 00110110(16 进制数 36)重复 b/8 次的结果, opad=01011100(16 进制数 5C）重复b/8次的结果。HMAC 算法描述如下:
+.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/mac001.png" /></p>
+<p>即为以下步骤：
+- 在密钥 K 后面添加 0 来创建一个字长为 b 的字符串。
+- 将上一步生成的 b 字长的字符串与 ipad 做异或运算。
+- 将消息 M 的数据流填充至第二步的结果字符串中．
+- 用 H 作用于第三步生成的数据流。
+- 将第一步生成的b 字长字符串与 opad 做异或运算。
+- 再将第四步的结果填充进第五步的结果中．
+- 用 H 作用于第六步生成的数据流, 输出最终结果。</p>
+<p>HMAC 算法的构造考虑到了 HASH 函数的缺陷, 在一定程度增加了攻击的难度。</p>
+<p>HMAC 算法的密钥可以是任意长度, 当密钥长度比 Hash 曲函数的分组长度更长时, 要对密钥进行 Hash 运算， 用它的摘要作为 HMAC 使用的密钥。但是, 当密钥长度小于 Hash 函数输出 Hash 值的长度时,将降低HMAC 算法的安全性,因此推荐的密钥最小长度是嵌入 Hash 函数输出 Hash 值的长度。 长度大于 Hash 函数输出 Hash 值长度的密钥是可以接受的， 但是额外的长度并不能显著的提高 HMAC 算法的安全性。 另外， 密钥必须随机选取(或使用强壮的基于随机种子的伪随机生成方法), 并且要周期性的更新。 周期性地更新密钥是对付函数和密钥所存在的潜在缺陷的基本安全措施, 可以降低泄漏密钥带来的危害。</p>
+<h4 id="2hmac">2.HMAC 的安全性</h4>
+<p>HMAC 算法的构造考虑到了 Hash 函数的缺陷, 它通过二次 Hash 运算修正了 Hash 函数的缺陷, 而且在密钥的作用下使 Hash 函数的值域没有缩小。 HMAC 的设计者考虑了不同攻击模型的攻击代价, 考虑到离线攻击比在线攻击更易于完成, 在构造 HMAC 时特别在二次 Hash 运算中也使用了密钥, 加强了对离线攻击的抵御能力。</p>
+<p>HMAC 算法的安全性依赖于嵌入的 HASH 函数的安全性, 目前对 HMAC 算法最有力的攻击基于对 HASH 函数的碰撞攻击。 如果采用生日攻击， 在不更换 HMAC 算法的密钥的前提下, 对于嵌入输出摘要长度为 n 比特的 HASH 函数, 需要对大约２^n/2 个消息计算摘要, 才能找到一个碰撞。这在计算上是不可行的，因此，在现有的条件下， 生日攻击对 HMAC 算法基本不可行， 除非所嵌入的 HASH 函数存在严重的缺陷和冲突。由于 MD5 和 SHA-1 算法已经被破解，所有在选择嵌入 Hash 函数的时候一定要慎重，千万不要选择已经被破解的算法。</p>
+<p>同时， HMAC 的安全性也依赖于密钥。 密钥的安全性依赖于密钥的长度和随机性。用 HMAC 进行消息认证时，应该选择随机密钥或使用密码伪随机序列生成器生成的密钥。密钥的长度不能小于 HASH 函数输出 HASH值的长度， 要采用安全的密钥协商机制，要尽量频繁地更新密钥，并对密钥进行良好地安全防护。 这些都是维护 HMAC 消息认证安全性的基本要素。如果攻击者无法破解密钥，即使攻击者找到了 HASH 函数的碰撞也无法伪造消息从而对 HMAC 消息认证进行有效的攻击。 所以, 在保证密钥安全性的前提下， HMAC 消息认证要比单纯的用 HASH 函数进行消息认证具有更高的安全性。</p>
+<h3 id="umac">三. UMAC算法</h3>
+<h3 id="_3">四.总结</h3>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            回到页面顶部
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="页脚" >
+      
+        
+        <a href="../blockCipher/index.html" class="md-footer__link md-footer__link--prev" aria-label="上一页: 第五章：分组加密" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              第五章：分组加密
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../PKI/index.html" class="md-footer__link md-footer__link--next" aria-label="下一页: 第七章：PKI公钥基础设施" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              第七章：PKI公钥基础设施
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["toc.integrate", "navigation.top"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\uff0c\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+        <script src="/mathjax/LaTeX.js"></script>
+      
+    
+    
+  </body>
+</html>

@@ -1,0 +1,996 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="本书的目标是将苦涩难懂的密码学简单化，让更多人能够读懂密码学，对密码学产生兴趣。阅读本书，需有一定的数学理论基础。书中的密码将以图解和简单易懂的语言叙述密码学的逻辑。">
+      
+      
+      
+        <link rel="canonical" href="https://crypt.wenwoha.com/ot/index.html">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>第十一章：不经意传输 - 人人都能看懂的密码学</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#7e56c2">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="人人都能看懂的密码学" class="md-header__button md-logo" aria-label="人人都能看懂的密码学" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            人人都能看懂的密码学
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第十一章：不经意传输
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/guoshijiang/cryptography/" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="人人都能看懂的密码学" class="md-nav__button md-logo" aria-label="人人都能看懂的密码学" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    人人都能看懂的密码学
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/guoshijiang/cryptography/" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../preface/index.html" class="md-nav__link">
+        第一章：序言
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../history/index.html" class="md-nav__link">
+        第二章：密码学发展简史
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../encryptType/index.html" class="md-nav__link">
+        第三章：对称加密和非对称加密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Hash/index.html" class="md-nav__link">
+        第四章：单向散列函数
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../blockCipher/index.html" class="md-nav__link">
+        第五章：分组加密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MAC/index.html" class="md-nav__link">
+        第六章：消息认证码
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PKI/index.html" class="md-nav__link">
+        第七章：PKI公钥基础设施
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DigitalSignature/index.html" class="md-nav__link">
+        第八章：数字签名
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../share/index.html" class="md-nav__link">
+        第九章：秘密共享
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MPC/index.html" class="md-nav__link">
+        第十章：MPC 多方计算概述
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          第十一章：不经意传输
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="index.html" class="md-nav__link md-nav__link--active">
+        第十一章：不经意传输
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    不经意传输
+  </a>
+  
+    <nav class="md-nav" aria-label="不经意传输">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    一.不经意传输发展现状
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    二.不经意传输概念
+  </a>
+  
+    <nav class="md-nav" aria-label="二.不经意传输概念">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-1-1" class="md-nav__link">
+    1. 1 选 1 不经意传输
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-2-1" class="md-nav__link">
+    2. 2 选 1 不经意传输
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-n-1" class="md-nav__link">
+    3. n 选 1 不经意传输
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-n-k" class="md-nav__link">
+    4. n 选 k 不经意传输
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    三.几种常见的不经意传输算法设计
+  </a>
+  
+    <nav class="md-nav" aria-label="三.几种常见的不经意传输算法设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-aes" class="md-nav__link">
+    1.基于 AES 的不经意传输协议
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-rsa" class="md-nav__link">
+    2.基于 RSA 的不经意传输
+  </a>
+  
+    <nav class="md-nav" aria-label="2.基于 RSA 的不经意传输">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    2.1.协议的安全性分析
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1.协议的安全性分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    接收方的隐私保护
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    发送方的隐私保护
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3.基于椭圆曲线的不经意传输
+  </a>
+  
+    <nav class="md-nav" aria-label="3.基于椭圆曲线的不经意传输">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    初始化阶段
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    传输阶段
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-ibe" class="md-nav__link">
+    4.基于 IBE 公钥系统的不经意传输
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5.基于匿名验证隐藏证书的不经意传输
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-ntru" class="md-nav__link">
+    6.基于 NTRU 的不经意传输
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    四.不经意传输的应用
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    五.总结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GC/index.html" class="md-nav__link">
+        第十二章：混淆电路
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MPC/mpc-implementation.html" class="md-nav__link">
+        第十三章： 具体的 MPC 算法和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/zkp_introduce.html" class="md-nav__link">
+        第十四章：零知识证明简介
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/app.html" class="md-nav__link">
+        第十五章：零知识证明应用
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/groth16.html" class="md-nav__link">
+        第十六章：Groth16 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十七章：Sonic 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十八章：Fractal 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十九章：Halo 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十章：SuperSonic 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十一章：Marlin 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十二章：Plonk 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十三章：Zk-Stark 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../china/index.html" class="md-nav__link">
+        第二十三章：国密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../preface/index.html" class="md-nav__link">
+        关于本书
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <a href="https://github.com/guoshijiang/cryptography/edit/master/ot/README.md" title="编辑此页" class="md-content__button md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+  <h1>第十一章：不经意传输</h1>
+
+<h2 id="_1">不经意传输</h2>
+<h3 id="_2">一.不经意传输发展现状</h3>
+<p>1981 年：Rabin 首次提出不经意传输的概念，该协议中发送方发送秘密消息 m, 接收方以 1/2 概率成功获取该消息。</p>
+<p>1985 年：Even 等提出了 2 取 1 不经意传输，协议中发送方有两条秘密消息m1 和 m2, 其中 m1,m2 属于 {0, 1}, 接收方选择并且恢复其中一条消息，发送方无法知道接收方选择了那一条消息。</p>
+<p>1986 年：G.Brassard 等人提出了 n 取 1 不经意传输协议，该协议实际上在 2 取 1 上经过加工设计的，该协议通过调用 n 轮 2 取 1 不经意传输协议来实现 n 取 1 不经意传输协议；随后 G.Brassard 等人发现该协议有一些小 Bug, 随后他们又进一步设计了通过调用 log2 的 n 次方 2 取 1 不经意传输协议来实现 n 取 1 的不经意传输协议，从此之后， n 取 1 的不经意传输协议成为了一个重要的研究课题。这个研究课题吸引了越来越多的研究人员加入，有基于这个协议设计增强协议，又基于判定的 Diffie-Hellman 困难问题假设，实现 n 取 1 的不经意传输协议，甚至还有基于同态的，就是没有人考虑 n 取 k 的不经意传输协议的。</p>
+<p>1989 年：一群以 Bellare 带头的聪明人提出了一个 n 取 n-1 不经意传输协议，接着 Naor 设计了通过调用 2 取 1 不经意传输协议，实现了一个非平凡的 n 取 k 的不经意传输协议。Naor 又进一步提出具有适应性的不经意传输协议。</p>
+<p>自此， 不经意传输进入繁荣时代，zhang 提出了高校的 n 取 k 不经意传输协议，chengkangchu 提出了带有自适应和非适应性询问协议，赵春明设计了基于隐藏证书的 n 取 k 不经意传输协议。王风和基于格的不经意传输协议。还有很多优秀的朋友设计了很多优秀的算法 ......</p>
+<h3 id="_3">二.不经意传输概念</h3>
+<p>不经意传输（OT）是通信双方用来传递秘密消息的协议，一般有两个参与方，一方是消息发送方或者说消息持有方，他拥有 n 条秘密消息，另一方是消息接收方，希望获得发送方手中的 k (k &lt; n) 条消息。协议要求接收方应该正确的获取到自己的消息，而发送方并不知道接收方接收了那些消息。</p>
+<p>不经意传输协议应满足以下几个条件</p>
+<ul>
+<li>正确性：协议执行完毕后，接收方能够收到发送方发过来的加密消息，同时也能正确的解密他所选择的消息。</li>
+<li>接收方的隐私性：协议执行完毕后，发送方无法获知接收方选择了那些消息，从而保证了接收方选择的隐秘性。</li>
+<li>发送方的隐私性：协议执行完毕后，接收方只能获取到其选择的消息，不会知道他所选择之外的消息。</li>
+<li>抗冒名攻击：只有被发送方认可的接收方才能拿到发送方发送的秘密消息</li>
+<li>抗重放攻击性：发送方与接收方之前传递的数据被攻击者利用网络手段监听到，攻击者利用通信双方的公共参数以及截取到的数据，无法获知发送方拥有的秘密数据和接收方的具体选择。</li>
+<li>抗中间人攻击：攻击者截取通信双方的通信数据，同时冒充接收方与发送方通信获取发送方的秘密消息，同时冒充发送方与接收方防止接收方发现截取而采用其他方式终止协议执行。安全的不经意传输协议需要抵抗这样的攻击。</li>
+</ul>
+<p>不经意传输一般可以分为以下几个类别</p>
+<h4 id="1-1-1">1. 1 选 1 不经意传输</h4>
+<p>发送方将秘密消息 M 加密后发送给接收方，发送方无法确认接收方是否成功恢复出秘密消息 M。</p>
+<h4 id="2-2-1">2. 2 选 1 不经意传输</h4>
+<p>发送方将秘密消息 M1 和 M2 加密后发送给接收方，接收方只能成功恢复其中的一个秘密消息 Mi i 属于 {1, 2}, 发送方无法确定接收方恢复的消息是 M1 还是 M2。</p>
+<h4 id="3-n-1">3. n 选 1 不经意传输</h4>
+<p>发送方将 n 个秘密消息 M1，M2，M3 ... Mn 加密后发送给接收方，接收方只能成功恢复其中的一个秘密消息 Mi i 属于 Zn, 发送方无法确定接收方恢复的消息是 M1, M2, M3 ... Mn 中的那一个。</p>
+<h4 id="4-n-k">4. n 选 k 不经意传输</h4>
+<p>发送方将 n 个秘密消息 M1，M2，M3 ... Mn 加密后发送给接收方，接收方只能成功恢复其中的 K 个秘密消息</p>
+<p>Ma1, Ma2 ... Mak, a1, ak 属于 {1, n}</p>
+<p>发送方无法确定接收 Ma1, Ma2 ... Mak 是 M1，M2，M3 ... Mn 中的哪 K 个。</p>
+<p>n 选 k 不经意传输协议具有一般特性，所有我们的整个分享论述都是基于 n 选 k 这种协议算法模式。</p>
+<h3 id="_4">三.几种常见的不经意传输算法设计</h3>
+<p>目前市面上比较流行的 n 选 k 不经意传输协议的设计主有要基于 AES 的不经意传输协议，基于 RSA 的不经意传输协议，基于椭圆曲线的不经意传输协议，基于 IBE 公钥系统的不经意传输，基于 NTRU 的不经意传输和基于匿名验证隐藏证书的不经意传输等。</p>
+<h4 id="1-aes">1.基于 AES 的不经意传输协议</h4>
+<h4 id="2-rsa">2.基于 RSA 的不经意传输</h4>
+<p>RSA 加密算法设计的 n 选 K 不经意传输是有 Hung 等设计的，整个协议的执行流程如下：</p>
+<p>Alice 拥有 n 个秘密消息 m1, m2, m3 ... mn, 并且同意不经意传输其中的 K 个消息 {mσ1, mσ2, mσ3 ... mσk} 给接收方 Bob, {σ1, σ2 ... σk} ∈ {1, 2 ... n } 为 Bob 的一个选择，同时 Alice 的 RSA 公钥系统公钥为（e, N），解密私钥为 d, Alice 和 Bob 通过以下步骤完成不经意传输协议：</p>
+<p>.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/rsaot.jpeg" /></p>
+<h5 id="21">2.1.协议的安全性分析</h5>
+<p>协议中密文的安全基于 RSA 加密算法的安全， 根据前面章节中对 RSA 加密算法的介绍， 对于第三方在没有 Alice 解密密钥的前提下， 无法通过 Alice 与 Bob 的交互数据中获取到消息 M1 到 Mn。</p>
+<h6 id="_5">接收方的隐私保护</h6>
+<p>根据协议的执行过程以及 RSA 加密算法的安全性， 显然只有 Alice 能够计算
+.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/rsabjy01.png" /></p>
+<p>但是，Si 是由 Bob 随机选取的， 对 Alice 是保密的， Alice 无法根据 Zi 知道 Zi 是由哪个消息计算得来, 因此 Alice 无法获知 Bob 的选择。 保证了 Bob 选择的隐私性。</p>
+<h6 id="_6">发送方的隐私保护</h6>
+<p>在这个协议中由于 Bob 没有 Alice 的解密私钥 d, 这里 e = 1 mod Φn， 根据 RSA 算法的安全性， Bob 不能通过任一加密密文
+.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/rsabjy002.png" /></p>
+<p>获取消息Mi，i=1，2，3，... n； 因此 Bob 无法获得其他 n - k 个消息， 这是因为 Alice仅仅解密了 k 个秘密消息。</p>
+<h4 id="3">3.基于椭圆曲线的不经意传输</h4>
+<p>祝孔儒利用椭圆曲线离散对数问题到现在仍然没有找到亚指数的时间级破解优势，结合椭圆曲线离散对数问题构造一种新的不经意传输，整个协议执行流程如下：</p>
+<h5 id="_7">初始化阶段</h5>
+<p>在不经意传输协议的预处理阶段，首先构造一个有限域 Fq, 在有限域 Fq 上面定义椭圆曲线 E，取椭圆曲线上的点 P，M，发送方 Alice 在区间 <a href="n 是椭圆曲线上的电 P 的阶，且为素数">1, n-1</a>上随机选取整数 p 做为算法的私钥，计算点 K = pM, 其中 K 做为算法的公钥，并且 K 也是椭圆曲线上的点，其坐标在有限域 Fq 上，然后 Alice 把公钥 K 和生成元点 M 发送给接收方 Bob。此时 Bob 随机选择 i ∈ {0,1} 做为自己的选项。</p>
+<h5 id="_8">传输阶段</h5>
+<p>协议按照一下步骤执行</p>
+<p>(1）发送方 Alice 将生成元 M 公钥 K 发送给接收方 Bob</p>
+<p>(2) 接收方 Bob 在收到 M 和 K 后，执行以下步骤：</p>
+<ul>
+<li>随机选择整数 ai ∈ Fq</li>
+<li>在区间 [1 , n-1]上随机选择整数 bi</li>
+<li>计算点（x1, y1）= biM, (x2, y2) = biK(如果 x2=0, 则重新选择 bi, 直到 x2 不等于 0)</li>
+<li>计算 si = ai * x1, 再随机选取密文 s1-i  ∈ Fq, 最后将密文对（s0, s1）和 (x1, y1) 发送给 Alice</li>
+</ul>
+<p>(3).由于 Alice 知道私钥 p, 因此可以从密文（s0, s1）中计算出明文对（a0, a1),具体的计算过程如下</p>
+<ul>
+<li>利用私钥 p 和点（x1, y1）计算 (X2, y2) = p(x1, y1);</li>
+<li>令 j = 0,1, 再计算 aj = sj * x2 的 -1 次方，从而得到明文 aj 的信息</li>
+<li>令 j = 0,1, 设 cj ^ i = cj xor Lj, 其中 cj 是 Alice 不经意传输的位，Lj 是明文 aj 的最低有效位。</li>
+<li>发送 c0 和 c1 给 Bob</li>
+</ul>
+<p>(4) Bob 由于知道 aj, 因此可以通过计算 cj 的 i 次方异或 Li 恢复出 ci 的内容，具体执行过程如下：
+.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/eccot4.jpeg" /></p>
+<p>由上图的执行过程可以知道，如果接受方是诚实的参与者，则无法猜到明文 a1-i, 原因是离散对数学的难解性。他保证接收者即使在知道密文的前提下，点(x1, y1)、M 和 K 也不能在多项式时间内计算出 b1-i 和 b1-i * K 的值，这说明了接收方只能得到位而无法计算出有关 c1-i 的值。此外，对于发送方来说，密文对（s0, s1）是完全等价的，并且根本无法知道接收方选择了 c0 还是 c1。</p>
+<p>综合以上分析可以得知，如果协议的参与方都严格按照协议的步骤执行，那么上述协议就可以将位 c0 和 c1 从发送方不经意地传输给接收方。</p>
+<h4 id="4-ibe">4.基于 IBE 公钥系统的不经意传输</h4>
+<p>本小节将要介绍的是以 Boneh 设计的基于身份加密系统为基础构造了一个n 取 k 不经意传输协议， 同时给出了协议的正确性、安全性分析，以及协议执行效率分析。</p>
+<h4 id="5">5.基于匿名验证隐藏证书的不经意传输</h4>
+<h4 id="6-ntru">6.基于 NTRU 的不经意传输</h4>
+<h3 id="_9">四.不经意传输的应用</h3>
+<p>MPC 中的一种协议，主要用于数据的隐私保护。</p>
+<h3 id="_10">五.总结</h3>
+<p>不经意传输协议，一种具有隐私保护功能的通信协议，能使通信双方以一种选择模糊化的方式在彼此之间传送消息。OT是密码学的一个基本协议，他使得服务的接收方以不经意的方式得到服务发送方输入的某些消息，这样就可以保护接收者的隐私不被发送者所知道，同时接收者也不知道发送者具体发送了什么消息。</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            回到页面顶部
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="页脚" >
+      
+        
+        <a href="../MPC/index.html" class="md-footer__link md-footer__link--prev" aria-label="上一页: 第十章：MPC 多方计算概述" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              第十章：MPC 多方计算概述
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../GC/index.html" class="md-footer__link md-footer__link--next" aria-label="下一页: 第十二章：混淆电路" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              第十二章：混淆电路
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["toc.integrate", "navigation.top"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\uff0c\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+        <script src="/mathjax/LaTeX.js"></script>
+      
+    
+    
+  </body>
+</html>
