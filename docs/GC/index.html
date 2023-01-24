@@ -1,0 +1,866 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="本书的目标是将苦涩难懂的密码学简单化，让更多人能够读懂密码学，对密码学产生兴趣。阅读本书，需有一定的数学理论基础。书中的密码将以图解和简单易懂的语言叙述密码学的逻辑。">
+      
+      
+      
+        <link rel="canonical" href="https://crypt.wenwoha.com/GC/index.html">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>第十二章：混淆电路 - 人人都能看懂的密码学</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#7e56c2">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="人人都能看懂的密码学" class="md-header__button md-logo" aria-label="人人都能看懂的密码学" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            人人都能看懂的密码学
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第十二章：混淆电路
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/guoshijiang/cryptography/" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="人人都能看懂的密码学" class="md-nav__button md-logo" aria-label="人人都能看懂的密码学" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    人人都能看懂的密码学
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/guoshijiang/cryptography/" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../preface/index.html" class="md-nav__link">
+        第一章：序言
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../history/index.html" class="md-nav__link">
+        第二章：密码学发展简史
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../encryptType/index.html" class="md-nav__link">
+        第三章：对称加密和非对称加密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Hash/index.html" class="md-nav__link">
+        第四章：单向散列函数
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../blockCipher/index.html" class="md-nav__link">
+        第五章：分组加密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MAC/index.html" class="md-nav__link">
+        第六章：消息认证码
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PKI/index.html" class="md-nav__link">
+        第七章：PKI公钥基础设施
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DigitalSignature/index.html" class="md-nav__link">
+        第八章：数字签名
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../share/index.html" class="md-nav__link">
+        第九章：秘密共享
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MPC/index.html" class="md-nav__link">
+        第十章：MPC 多方计算概述
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ot/index.html" class="md-nav__link">
+        第十一章：不经意传输
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          第十二章：混淆电路
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="index.html" class="md-nav__link md-nav__link--active">
+        第十二章：混淆电路
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    混淆电路
+  </a>
+  
+    <nav class="md-nav" aria-label="混淆电路">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    一. 混淆电路的发展现状
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    二. 混淆电路
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gmw" class="md-nav__link">
+    三.GMW 协议
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bgw" class="md-nav__link">
+    四.BGW 协议
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ccd" class="md-nav__link">
+    五.CCD 协议
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    六.总结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MPC/mpc-implementation.html" class="md-nav__link">
+        第十三章： 具体的 MPC 算法和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/zkp_introduce.html" class="md-nav__link">
+        第十四章：零知识证明简介
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/app.html" class="md-nav__link">
+        第十五章：零知识证明应用
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/groth16.html" class="md-nav__link">
+        第十六章：Groth16 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十七章：Sonic 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十八章：Fractal 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十九章：Halo 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十章：SuperSonic 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十一章：Marlin 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十二章：Plonk 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十三章：Zk-Stark 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../china/index.html" class="md-nav__link">
+        第二十三章：国密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../preface/index.html" class="md-nav__link">
+        关于本书
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <a href="https://github.com/guoshijiang/cryptography/edit/master/GC/README.md" title="编辑此页" class="md-content__button md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+  <h1>第十二章：混淆电路</h1>
+
+<h2 id="_1">混淆电路</h2>
+<h3 id="_2">一. 混淆电路的发展现状</h3>
+<p>1982 年：姚期智提出混淆电路，此时的混淆电路识两方计算</p>
+<p>2009 年：Lindell 等给出了安全性证明和详细介绍</p>
+<p>2013 年：Goldwasser 给出了简化形式</p>
+<h3 id="_3">二. 混淆电路</h3>
+<p>早期的MPC协议都是基于电路模型，其中最为典型的就是混淆电路协议。混淆电路是一种两方安全计算方法，最早由姚期智先生提出，为此，他还提出了经典的百万富翁问题：在双方不透露任何资产的情况下比较谁更富有。参与的双方分别是电路生成者和电路执行者，首先双方达成一致地将要执行的联合函数转换成布尔电路。通常地，生成者使用对称加密算法（AES等）对每个门电路进行加密。对电路上的每一条线路的可能输入（输出）值，生成者选取对等个数的随机数分别进行一一替换，这些随机数被称为混淆密钥。生成者再利用这些混淆密钥，对电路里的每个门的输出的混淆密钥进行加密，得到混淆电路的真值表。</p>
+<table>
+<thead>
+<tr>
+<th align="left">X</th>
+<th align="left">Y</th>
+<th align="left">Z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+</tr>
+</tbody>
+</table>
+<p>以简单的与门电路为例，假设有输入x，y，输出为z，则有真值表： </p>
+<p>首先，x和y不能公开（也不能全部发送给执行者），可以用随机数表示，执行者拿到的是z的相关信息。而z的信息也不能完全透露，如果采用简单的编码替换z的结果，很容易便可以推出z的输入信息，因此，需要真值表中z的四个结果都使用不一样的表示，也可采用随机数，同时，z的随机数可以由某一组的xy解得，因此可以使用对应的xy来对z进行加密。整个过程就是混淆真值表生成的过程，最终的混淆真值表： </p>
+<p>.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/121.png" /></p>
+<p>生成者将混淆真值表的z顺序打乱后连同自己的输入随机数发送给执行者（注意：前提是生成者与执行者共同约定执行电路），执行者接受到消息后开始执行电路。一般地，生成者提供自己的x输入后，执行者在和之间选择自己的输入便可解得z，和同样由生成者提供，但是生成者不能都发送给执行者，同时，执行者也不想让生成者知道自己选择了哪个，这时，OT协议就起作用了，混淆电路正是使用了OT协议解决这个问题。最终，执行者使用生成者提供的x输入和自己的输入依次解密z，解密成功的z即为最终结果（注意：结果有且只有一个，并且只是解密得到z的混淆密钥）。执行者再将结果也即混淆密钥发送给生成者，生成者对照真值表把密钥对应的真实z的输出结果发送给执行者，至此，双方便完成了一次混淆电路计算。</p>
+<p>混淆电路的前提是需要双方彼此事先约定好执行电路，并且双方都能诚实地把结果发送给对方，这是一半诚实模型。最初的混淆电路协议可以对抗半诚实攻击，经过后续的许多改进和优化，也可以对抗完全恶意攻击。在实际应用过程中，还存在复杂运算逻辑的表示和电路生成计算的性能问题。</p>
+<h3 id="gmw">三.GMW 协议</h3>
+<p>GMW 协议由 Goldreich 等人提出，基于混淆电路（Garbled Circuit），支持多方的半诚实的安全计算协议。和之前所述的姚氏混淆电路估值方案的不同之处在于，GMW 混淆电路估值方案不需要使用混淆真值表，因此没用混淆真值表带来的查表和加解密操作，节省了非常大的计算量和通信量。混淆电路在上次的科普已经介绍过了，在将安全多方计算的目标函数转换为布尔电路后，通过对电路进行混淆（加密）操作来得到混淆电路。混淆电路通过对电路进行混淆（加密）操作来掩盖电路的输入和电路的结构，以此来实现对各个参与者的隐私信息的保密，再通过电路计算来实现安全多方计算的目标函数的计算。</p>
+<p>GMW 协议的目标函数由异或门和与门、非门组成。非门的输出值是输入值的反，输入为 1 则输出为 0，反之输入为 0 则输出为 1</p>
+<p>与门的真值表如下图所示：</p>
+<p>.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/new_gmw1.jpg" /></p>
+<p>异或门及其真值表如下图所示：</p>
+<p>.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/new_gmw2.png" /></p>
+<p>算法流程如下：</p>
+<h3 id="bgw">四.BGW 协议</h3>
+<p>BGW 协议也是支持多方的安全计算协议，BGW 协议基于 Shamir(t, n)门限秘密共享机制，利用了 Shamir 秘密共享机制的加法同态和乘法同态的性质。</p>
+<p>假设 BGW 协议的参与者一共有 n 人，假设参与者 Pi 需要输入秘密 ，则参与者 Pi 首先利用Shamir(t,n)门限秘密共享机制将秘密 共享给其他所有参与者，阈值 t 的选择根据具体使用情景下的安全性要求决定。</p>
+<p>当所有参与者的输入都通过Shamir(t, n)门限秘密共享机制分享后，每个参与者都掌握了协议输入的子秘密。假设一个门的输入分别为 a 和 b ，秘密 ai 和 bi 已经分别由秘密分配函数</p>
+<p>.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/bgw1.png" /></p>
+<p>分配完成，fa(0) = a, fb(0) = b， 参与者 Pi 掌握 a 和 b 的子秘密 ai , bi。在布尔电路上，可将异或门和与门分别看成在有限域 F2 上的加法和乘法。将异或用模为 2 的加法进行计算，与用模为 2 的乘法进行计算。</p>
+<p>.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/bgw2.jpg" /></p>
+<p>对于异或门：由于 Shamir 具有加法同态性，因此</p>
+<p>.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/bgw3.jpg" /></p>
+<p>假设 ci = ai xor bi，则 c(i) = a(i) xor b(i) ，而 a(i) = ai和 bi =b(i) 都由 Pi 掌握，因此 Pi 可以本地计算出 ci = ai xor bi 。当所有计算完成后，每个参与者Pi公布自己计算出的 c(i) ，即可恢复出 c(x) 和 c(0)。 </p>
+<p>.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/bgw4.jpg" /></p>
+<p>对于与门，和之前叙述过的基于 Shamir(t, n)门限共享机制的多方乘法计算相同，只是 BGW 是在有限域 F2 上。每个参与者 Pi 计算 ai * bi ，接着每个Pi独自选取次数为 t 次的随机多项式 hi(x) ，且满足 hi(x) = di ,1 ≤ t ≤ n ， t &lt; n / 2 。向各个参与者分配 di ，且 cij = hi(x) , 所有参与者分配结束后，Pi 掌握了信息 c1i, c2i ... cni ，同时再利用公开的重组向量1, ... n， </p>
+<p>Pi 计算:</p>
+<p>.： 
+    <img alt=".： 
+" src="https://github.com/guoshijiang/cryptography/blob/master/img/bgw5.jpeg" /></p>
+<p>此时 Pi 掌握的子秘密 ci 即为 c 的子秘密。当所有计算完成后，每个参与者公开自己的子秘密，再根据之前叙述的 Shamir(t, n)门限秘密重构算法即可获得 。</p>
+<h3 id="ccd">五.CCD 协议</h3>
+<h3 id="_4">六.总结</h3>
+<p>经过近几年的发展，MPC协议系统已经不再使用严格的电路表示，而是使用混合模型，在混合模型中，函数被编译成一组优化的子协议函数，用于公共操作。这组原语可以包括传统的基于电路的协议模型，可以在单个协议中被无缝地描述。混合模型系统通常将中间值表示为一个大的有限域上的密钥分享。它们可以使用信息论和密码协议的混合，因此，计算参与方的数量和威胁模型都不同。</p>
+<p>与严格的基于电路的模型相比，混合模型允许存在非常不同的性能特性。例如，在有限域中，比较、位移和相等性测试等操作作为算术电路表示代价高昂。然而，操作密钥分享的专用子协议在共享计算结果方面却非常高效。</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            回到页面顶部
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="页脚" >
+      
+        
+        <a href="../ot/index.html" class="md-footer__link md-footer__link--prev" aria-label="上一页: 第十一章：不经意传输" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              第十一章：不经意传输
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../MPC/mpc-implementation.html" class="md-footer__link md-footer__link--next" aria-label="下一页: 第十三章： 具体的 MPC 算法和代码实现" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              第十三章： 具体的 MPC 算法和代码实现
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["toc.integrate", "navigation.top"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\uff0c\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+        <script src="/mathjax/LaTeX.js"></script>
+      
+    
+    
+  </body>
+</html>

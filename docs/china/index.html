@@ -1,0 +1,1191 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="本书的目标是将苦涩难懂的密码学简单化，让更多人能够读懂密码学，对密码学产生兴趣。阅读本书，需有一定的数学理论基础。书中的密码将以图解和简单易懂的语言叙述密码学的逻辑。">
+      
+      
+      
+        <link rel="canonical" href="https://crypt.wenwoha.com/china/index.html">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>第二十三章：国密 - 人人都能看懂的密码学</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#7e56c2">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#n" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="人人都能看懂的密码学" class="md-header__button md-logo" aria-label="人人都能看懂的密码学" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            人人都能看懂的密码学
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第二十三章：国密
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/guoshijiang/cryptography/" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="人人都能看懂的密码学" class="md-nav__button md-logo" aria-label="人人都能看懂的密码学" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    人人都能看懂的密码学
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/guoshijiang/cryptography/" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../preface/index.html" class="md-nav__link">
+        第一章：序言
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../history/index.html" class="md-nav__link">
+        第二章：密码学发展简史
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../encryptType/index.html" class="md-nav__link">
+        第三章：对称加密和非对称加密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Hash/index.html" class="md-nav__link">
+        第四章：单向散列函数
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../blockCipher/index.html" class="md-nav__link">
+        第五章：分组加密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MAC/index.html" class="md-nav__link">
+        第六章：消息认证码
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PKI/index.html" class="md-nav__link">
+        第七章：PKI公钥基础设施
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DigitalSignature/index.html" class="md-nav__link">
+        第八章：数字签名
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../share/index.html" class="md-nav__link">
+        第九章：秘密共享
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MPC/index.html" class="md-nav__link">
+        第十章：MPC 多方计算概述
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ot/index.html" class="md-nav__link">
+        第十一章：不经意传输
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GC/index.html" class="md-nav__link">
+        第十二章：混淆电路
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MPC/mpc-implementation.html" class="md-nav__link">
+        第十三章： 具体的 MPC 算法和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/zkp_introduce.html" class="md-nav__link">
+        第十四章：零知识证明简介
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/app.html" class="md-nav__link">
+        第十五章：零知识证明应用
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/groth16.html" class="md-nav__link">
+        第十六章：Groth16 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十七章：Sonic 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十八章：Fractal 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十九章：Halo 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十章：SuperSonic 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十一章：Marlin 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十二章：Plonk 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十三章：Zk-Stark 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          第二十三章：国密
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="index.html" class="md-nav__link md-nav__link--active">
+        第二十三章：国密
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    一. 关于本文
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    二. 本文结构
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sm1" class="md-nav__link">
+    三. SM1 算法原理和代码实战
+  </a>
+  
+    <nav class="md-nav" aria-label="三. SM1 算法原理和代码实战">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-sm1" class="md-nav__link">
+    1. SM1 简介
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sm1_1" class="md-nav__link">
+    二. SM1 应用场景
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sm2" class="md-nav__link">
+    四. SM2 算法原理和代码实战
+  </a>
+  
+    <nav class="md-nav" aria-label="四. SM2 算法原理和代码实战">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-sm2" class="md-nav__link">
+    1. SM2 的形成过程
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2. 椭圆曲线
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3. 椭圆曲线基本运算
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4. 椭圆曲线大数运算的数学基础
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 椭圆曲线大数运算的数学基础">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    4.1 模运算与素数域
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    4.2 有限域上的模运算的设计与实现
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    4..3 有限域上标量乘运算的设计与实现
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-sm2" class="md-nav__link">
+    5. SM2公钥加密算法
+  </a>
+  
+    <nav class="md-nav" aria-label="5. SM2公钥加密算法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-sm2" class="md-nav__link">
+    5.1 SM2加密算法
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-sm2" class="md-nav__link">
+    5.2. SM2解密算法
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-sm2" class="md-nav__link">
+    6 SM2 代码实现
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-sm2" class="md-nav__link">
+    7. SM2 小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sm3" class="md-nav__link">
+    五. SM3 算法原理和代码实战
+  </a>
+  
+    <nav class="md-nav" aria-label="五. SM3 算法原理和代码实战">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-sm3" class="md-nav__link">
+    1. SM3 简介
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-sm3" class="md-nav__link">
+    2. SM3 的算法描述
+  </a>
+  
+    <nav class="md-nav" aria-label="2. SM3 的算法描述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    2.1. 密码杂凑算法中的常量与函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-sm3" class="md-nav__link">
+    2.2. SM3 算法描述
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-sm3" class="md-nav__link">
+    3. SM3 代码实现
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-sm3" class="md-nav__link">
+    4. SM3 小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sm4" class="md-nav__link">
+    六. SM4 算法原理和代码实战
+  </a>
+  
+    <nav class="md-nav" aria-label="六. SM4 算法原理和代码实战">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-sm4" class="md-nav__link">
+    1. SM4 简介
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-sm4" class="md-nav__link">
+    2. SM4 算法描述
+  </a>
+  
+    <nav class="md-nav" aria-label="2. SM4 算法描述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21_1" class="md-nav__link">
+    2.1. 加解密算法描述
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    2.2. 密钥扩展算法
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-sm4" class="md-nav__link">
+    3.  SM4 代码实现
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-sm4" class="md-nav__link">
+    4. SM4 小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    七. 其他国密算法
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-sm7" class="md-nav__link">
+    1. SM7
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-sm9" class="md-nav__link">
+    2. SM9
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    八. 本文小结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../preface/index.html" class="md-nav__link">
+        关于本书
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <a href="https://github.com/guoshijiang/cryptography/edit/master/china/README.md" title="编辑此页" class="md-content__button md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+<h1 id="n">第 N 章：国密</h1>
+<h3 id="_1">一. 关于本文</h3>
+<p>国密即国家密码局认定的国产密码算法。主要有 SM1、SM2、SM3、SM4。密钥长度和分组长度均为 128 位。SM1 为对称加密，SM2 为非对称加密，SM3 消息摘要，SM4 分组密码算法。本次文将详细介绍四种主要国密的实现原理，以及 Java 代码实战，将会分析四种主要国密算法的应用场景；本次文针对有一定密码学基础或对密码学感兴趣的业界朋友</p>
+<h3 id="_2">二. 本文结构</h3>
+<p>文章依次介绍 SM1、SM2、SM3、SM4 算法原理和代码实战，让大家对国密算法有所理解之后，我们接着会介绍国密 SM1、SM2、SM3、SM4 算法的应用场景，完成应用场景的介绍，我们将会分析国密的现状，以及国密未来的发展方向。</p>
+<h3 id="sm1">三. SM1 算法原理和代码实战</h3>
+<h4 id="1-sm1">1. SM1 简介</h4>
+<p>SM1 为对称加密，盖算法的算法实现原理没有公开，他的加密强度和 AES 相当，需要调用加密芯片的接口进行使用。SM1 高达 128 bit 的密钥长度以及算法本身的强度和不公开性保证了通信的安全性。由于 SM1 加密算法的不公开，我们无法知晓其内部的原理，所以这儿也无法做代码实现。</p>
+<h4 id="sm1_1">二. SM1 应用场景</h4>
+<p>SM 1由获得国密办资质认证的特定机构将算法封装在芯片中，并销售给指定的厂商。SM1 算法己经被普遍应用于电子商务、政务及国计民生（例如国家政务、警务等机关领域）的各个领域。目前，市场上出现的系列芯片、智能 IC卡、加密卡、加密机等安全产品，均采用的是 SM1 算法。 数据加密包括软件加密和硬件加密两种方式。软件加密指单纯依靠代码来实现对软件的保护，而不需要特定的硬件服务。软件加密最突出的优势体现在它的成本低廉，实现简单，并且具备良好的灵活性和可移植性。但是，软件实现的加密要求 CPU 的全程参与，可能会产生不必要的等待和中断，从而导致系统资源浪费，特别是用软件加密处理海量数据时，会存在硬盘读写瓶颈的风险。而硬件加密利用集成在 CPU 芯片上的加密芯片实现，加密过程独立于 CPU，且在芯片内完成，可有效的防止数据被篡改。
+大多数银行使用的硬加密，底层算法也常常含有 SM1 。</p>
+<p>加密卡，就是将 AES、DES、MDS 等加密和认证算法集成在芯片上，该芯片被制成托卡（即加密卡），所有数据加解密和认证涉及到的运算全部在该卡上完成，进而加速了加解密过程，提升了设备的整体性能。目前，加密卡一般分为两类，一种是实现通用加解密和验证算法的加密卡，另一种是实现国密算法（SM1）的加密卡。</p>
+<h3 id="sm2">四. SM2 算法原理和代码实战</h3>
+<p>国密 SM2 为非对称加密，也称为公钥密码；国密算法的本质是椭圆曲线加密。关于对称加密和非对称加密的内容请查阅笔者写的《深入理解对称加密和非对称加密》一文。SM2 椭圆曲线公钥密码 ( ECC ) 算法是我国公钥密码算法标准。SM2 算法的主要内容包括 ３ 部分: 数字签名算法;  密钥交换协议和公钥加密算法。</p>
+<h4 id="1-sm2">1. SM2 的形成过程</h4>
+<p>在所有的公钥密码中，使用得比较广泛的有ECC 和 RSA； 而在相同安全强度下 ECC 比 RSA  的私钥位长及系统参数小得多， 这意味着应用 ECC 所需的存储空间要小得多， 传输所的带宽要求更低， 硬件实现 ECC 所需逻辑电路的逻辑门数要较 RSA 少得多， 功耗更低。 这使得 ECC 比 RSA 更适合实现到资源严重受限制的设备中 ， 如低功耗要求的移动通信设备 、无线 通信设备和智能卡等。</p>
+<p>ECC 的优势使其成为了最具发展潜力和应用前景的公钥密码算法 ， 至 2000 年国际上已有多个国家和行业组织将 ECC 采纳为公钥密码算法标准。在此背景下，我国从 2001 年开始组织研究自主知识产权的 ECC， 通过运用国际密码学界公认的公钥密码算法设计及安全性分析理论和方法 ， 在吸收国内外已有 ECC 研究成果的基础上 ， 于2004 研制完成了 SM2 算法． SM2 算法于 2010 年 12 月首次公开发布 ， 2012 年3 月成为中国 商用密码标准 （ 标准号为 GM/T0003—2012）， 2016 年 8 月成为中国 国家密码标准 (标准号为 ＧB/Ｔ 32918-2016)。</p>
+<h4 id="2">2. 椭圆曲线</h4>
+<p>在有限域 K 上，形如以下方程：</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/74a9f450-705f-11e9-aa97-d52fde2e3e58" /></p>
+<p>的方程被称为 Weierstrass 方程，其中 O=[0,1,0] 是唯一 的 Z 坐标为零的点，称为无穷远点。令 x=X/Z, y=Y/Z, 可将方 程记为:</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/df7bb020-705f-11e9-b46a-41726d193891" /></p>
+<p>且仍有无穷远点 O。
+对于方程中的系数，定义 </p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/3a4e1d80-7060-11e9-b46a-41726d193891" /></p>
+<p>其中:</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/5da2c330-7060-11e9-aa97-d52fde2e3e58" /></p>
+<p>当 Δ ≠ 0 时，椭圆曲线是非奇异的 [1]，即对所有满足 F(X,Y,Z)=0 的射影点 P=(X ∶ Y ∶ Z), F 在 P 点的 3 个偏导数 
+<img alt="enter image description here" src="https://images.gitbook.cn/8cfa5c60-7060-11e9-be31-a34bfde053f0" />必不全为 0。</p>
+<p>当 K 的特征不为 2 或 3 时，Weierstrass 方程又有以下形式：</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/bd867df0-7060-11e9-83ce-bf64b45f6e99" /></p>
+<p>其中:E:y2=x3+Ax2+B 就是国家密码局建议使用的椭圆曲线，本文也是以此曲线为基础进行算法实现。</p>
+<h4 id="3">3. 椭圆曲线基本运算</h4>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/55229ef0-72ff-11e9-a8ef-33cfb90ae5eb" /></p>
+<p>在椭圆曲线上，可以通过以下方式定义加法运算：取椭圆曲线上两点 P、Q，过 P、Q 作直线交椭圆曲线于R’…，过 R’做 y 轴的平行线交椭圆曲线于 R。若 P、Q 重合，则过 P 作曲线的切线交椭圆曲线于 R’…, 过 R’…做 y 轴的平行线交椭圆曲线于 R。规定 R=P+Q。如图一所示。对无穷远点 O 与椭圆曲线上一点 P，O+P=P+O=P。对 于 上 述 简 化 的 Weierstrass 方 程<img alt="enter image description here" src="https://images.gitbook.cn/956c7210-72ff-11e9-b7db-d127bed921dc" />令<img alt="enter image description here" src="https://images.gitbook.cn/c6058bf0-72ff-11e9-a8ef-33cfb90ae5eb" /></p>
+<p>若 R=P+Q，则 :</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/ee86cf30-72ff-11e9-a8ef-33cfb90ae5eb" /></p>
+<p>椭圆曲线密码体制即建立在上述加法运算和曲线构成的Abel 群上的密码体制。椭圆曲线密码体制主要涉及的运算是椭圆曲线上的点乘计算：Q=kP。Q、P 为椭圆曲线上的点，k为整数。</p>
+<h4 id="4">4. 椭圆曲线大数运算的数学基础</h4>
+<h5 id="41">4.1 模运算与素数域</h5>
+<p>同余是数论中的等价关系，对于正整数 m 如果有 a=b+km（a，b，k 均是整数）那么记b=a mod（m），则称 a 与 b 关于 m 同余。当 m=p（p为素数）时，我们定义素数域 FP 可由{0，1，2，3…p-1}中 P 个元素构成，关于 P的模运算称为素数域上模运算。</p>
+<h5 id="42">4.2 有限域上的模运算的设计与实现</h5>
+<p>有限域上的模运算是 SM2 椭圆曲线公钥密码算法的基础，主要包括模加和模减运算、模乘运算、模幂和模逆运算。模逆运算是模运算中最复杂运算量最大的运算，模逆运算可以通过费马小定理（n 是素数的时候，和 n 互素的某个整数 a 有公式 an-1=1modn 成立）得到，即当 p 为素数时，有ap-1=1mod p，则可得到模逆运算 a-1=ap-2mod p，这样就可以利用模幂运算来表示模逆运算。</p>
+<h5 id="43">4..3 有限域上标量乘运算的设计与实现</h5>
+<p>标量乘的数学形式，P=（xp，yp）为椭圆曲线E（FP）上的点，k为正整数，P的k倍点为Q。Q=［k］P=P+P+…+P（k个p）。标量乘运算是所有运算中最耗时的运算操作，主要由点加和倍点产生，点加和倍点运算在不同坐标系下的运算规则不同。采用仿射与雅可比混合坐标系下的运算规则：
+<img alt="enter image description here" src="https://images.gitbook.cn/df0ad060-7395-11e9-98d2-ebcf245f223d" /> ，其中，a，b为椭圆曲线上的整数，并且△= <img alt="enter image description here" src="https://images.gitbook.cn/19a23420-7396-11e9-b02d-058b823f7d15" />。</p>
+<p>三维坐标P（x1，y1，z1），Q（x2，y2，1）的无穷远点为（1，1，0）。倍点运算P+P=（ x3，y3，z3）声明为Padd1（x1，y1，z1，x3，y3，z3），把2P的值存入（x3，y3，z3），点加运算P+Q=（x3，y3，z3）声明为Padd2（x1，y1，z1，x2，y2，x3，y3，z3），把P+Q的值存入（x3，y3，z3）。最后还要把结果（x3，y3，z3）从雅可比加重摄影坐标系下转换到仿射坐标系下，需要对参数进行转换：x3=x3/z12，y3=y3/z13，即可得到所需的二维坐标点（x3，y3）。</p>
+<p>有了点加和倍点运算就可以进行标量乘运算，标量乘从右往左的算法为：输入：点P∈E（Fp）整数k=（k 31k30－k 0）（ki 为 8 位整型数）</p>
+<p>输出：Q=［k］P
+ 初始化Q=O为无穷远点
+循环i：0~31
+b=k（i b为8位整型数）
+循环j：0~7
+若（b&amp;1）=1，则Q=Q+P
+b=b&gt;&gt;1
+P=P+P
+返回Q</p>
+<h4 id="5-sm2">5. SM2公钥加密算法</h4>
+<p>素数域椭圆曲线的参数：素数域的模P，椭圆曲线E（FP）的
+系数：a，b；E（FP）上的基点G（Gx，Gy）≠0，基点G的解为n余
+因子h=1，用户A持有的用户B的公钥PB，用户B持有的私钥dB。</p>
+<h5 id="51-sm2">5.1 SM2加密算法</h5>
+<p>（1）用随机数发生器生成随机数<img alt="enter image description here" src="https://images.gitbook.cn/511015c0-7ac7-11e9-a023-5dfd4cad8c57" />
+（2）计算椭圆曲线上的点 <img alt="enter image description here" src="https://images.gitbook.cn/5a7f17f0-7ac7-11e9-bfe0-2d8b1a11ad74" />
+（3）计算椭圆曲线点 <img alt="enter image description here" src="https://images.gitbook.cn/64e7e370-7ac7-11e9-a23c-35b15700507e" />，若S为无穷远点则报错并退出，h 为余因子，这里取为 1。
+（4）计算椭圆曲线上的点<img alt="enter image description here" src="https://images.gitbook.cn/a8f9e220-7ac7-11e9-99f3-43e3454a8bb7" />
+（5）计算<img alt="enter image description here" src="https://images.gitbook.cn/af24dce0-7ac7-11e9-bfe0-2d8b1a11ad74" />，若t全为0则返回1。
+（6）计算 <img alt="enter image description here" src="https://images.gitbook.cn/b91f7d40-7ac7-11e9-a023-5dfd4cad8c57" />
+（7）计算 <img alt="enter image description here" src="https://images.gitbook.cn/c0d5d2f0-7ac7-11e9-bfe0-2d8b1a11ad74" />。
+（8）计算密文<img alt="enter image description here" src="https://images.gitbook.cn/c9029120-7ac7-11e9-bfe0-2d8b1a11ad74" />。</p>
+<h5 id="52-sm2">5.2. SM2解密算法</h5>
+<p>（1）从密文中取出 C1，验证C1是否满足椭圆曲线方程，若不满足则报错并退出。
+（2）计算<img alt="enter image description here" src="https://images.gitbook.cn/1a2745a0-7ac8-11e9-a023-5dfd4cad8c57" />，若S为无穷远点则报错并退出。
+（3）计算 <img alt="enter image description here" src="https://images.gitbook.cn/21efc3c0-7ac8-11e9-bfe0-2d8b1a11ad74" />。
+（4）计算 <img alt="enter image description here" src="https://images.gitbook.cn/2867a600-7ac8-11e9-a23c-35b15700507e" />。
+（5）从 C 中取出 C2 计算 <img alt="enter image description here" src="https://images.gitbook.cn/2fa7e150-7ac8-11e9-a023-5dfd4cad8c57" />
+（6）计算<img alt="enter image description here" src="https://images.gitbook.cn/35bac030-7ac8-11e9-a23c-35b15700507e" />，若 u 与 C3 不相等，则报错
+并退出。
+（7）输出明文 m。</p>
+<h4 id="6-sm2">6 SM2 代码实现</h4>
+<p>https://github.com/guoshijiang/NationalSecret</p>
+<h4 id="7-sm2">7. SM2 小结</h4>
+<p>SM2 算法是我国在吸收国际先进成果基础上研发出来的具有自主知识产权的 ECC 算法， 它在安全性和实现效率方面相当于或略优于国 际上同类的 ECC 算法， 能取代 RSA 以满足各种应用对公钥密码算法安全性和实现效率的更高要求， 具有广阔的推广和应用前景。</p>
+<h3 id="sm3">五. SM3 算法原理和代码实战</h3>
+<h4 id="1-sm3">1. SM3 简介</h4>
+<p>SM3 密码杂凑算法是中国国家密码管理局年公布的中国商用密码杂凑算法标准。该算法由王小云等人设计，消息分组比特，输出杂凑值比特，采用 Merkle Damgard 结构。密码杂凑算法的压缩函数与的压缩函数具有相似的结构，但是，密码杂凑算法的压缩函数的结构和消息拓展过程的设计都更加复杂，比如压缩函数的每一轮都使用个消息字，消息拓展过程的每一轮都使用个消息字等。</p>
+<p>SM3  密码杂凑算法消息分组长度 为 512b, 摘要长度 256b。压缩函数状态 256 b， 共 64 步操作。</p>
+<h4 id="2-sm3">2. SM3 的算法描述</h4>
+<h5 id="21">2.1. 密码杂凑算法中的常量与函数</h5>
+<p>初始值： SM3 密码杂凑算法的初始值共 256 b ， 由 8 个 32b 串联构成，
+具体值如下 ：
+<img alt="enter image description here" src="https://images.gitbook.cn/649a7b10-79e8-11e9-8dec-3dba4995d575" /></p>
+<p>常量
+<img alt="enter image description here" src="https://images.gitbook.cn/69958150-79e8-11e9-91d6-116993cb37bb" /></p>
+<p>布尔函数
+<img alt="enter image description here" src="https://images.gitbook.cn/6ec50510-79e8-11e9-aee1-59a97a37cd88" /></p>
+<p>上式中的 X，Y 为 32 位的字。</p>
+<p>置换函数
+<img alt="enter image description here" src="https://images.gitbook.cn/7611ea90-79e8-11e9-91d6-116993cb37bb" /></p>
+<p>上式中的 X，Y 为 32 位的字。</p>
+<h5 id="22-sm3">2.2. SM3 算法描述</h5>
+<p>对于长度为l(l 小于 2 的 64 次方)比特的消息 M，SM3 密码杂凑算法经过消息填充和迭代压缩，产生杂凑值，杂凑值的长度为 256 比特。</p>
+<ol>
+<li>消息填充</li>
+</ol>
+<p>假定消息输入的长度为l(l 小于 2 的 64 次方)比特。首先将比特 “1” 添加到消息的末尾，再添加 k 个 “0”，k 是满足 k + l + 1 = 448 mod 512 的最小的非负整数。然后再添加一个 64 位比特串，该比特串是长度 l 的二进制表示。填充后的消息 M 比特长度为 512 倍数。</p>
+<p>例如：对消息 01100001 01100010 01100011，其长度 l =24，经填充得到比特串：</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/3880e3f0-79ea-11e9-8dec-3dba4995d575" /></p>
+<ol>
+<li>迭代压縮</li>
+</ol>
+<p>迭代压缩是 SM3 密码杂凑算法的主体操作，此步骤产生最终杂凑值。迭代压缩过程可以表述如下：</p>
+<p>将消息填充后的消息  M  按 512 比特进行消息分组：<img alt="enter image description here" src="https://images.gitbook.cn/225fcd10-79eb-11e9-aee1-59a97a37cd88" />其中： n = (k + 1 + l + 64) / 512</p>
+<p>按如下方式迭:</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/61aa0a80-79eb-11e9-8dec-3dba4995d575" /></p>
+<p>其中 CF 是压缩函数， V (0) 为 256 比特初始值 IV，B (i)为填充后的消息分组，迭代压缩的结果为V(n)，同时也是消息 M 的杂凑值。</p>
+<p>3.消息拓展</p>
+<p>将消息分组 B (i) 按以下方法扩展生成个字 W0，W1  ...  W67； W0'，W1‘ ... W63'，用于压缩函数CF：</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/55974310-79ec-11e9-8dec-3dba4995d575" /></p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/5b17cd00-79ec-11e9-8dec-3dba4995d575" /><img alt="enter image description here" src="https://images.gitbook.cn/5fb45f90-79ec-11e9-8dec-3dba4995d575" /></p>
+<p>4.压縮函数</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/9fb43160-79ec-11e9-969e-fb1e44586b50" /></p>
+<p>其中字的存储为大端格式</p>
+<p>5.杂凑值</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/de678600-79ec-11e9-969e-fb1e44586b50" /></p>
+<p>输出 256 比特的杂凑值<img alt="enter image description here" src="https://images.gitbook.cn/e4b23dc0-79ec-11e9-969e-fb1e44586b50" /></p>
+<h4 id="3-sm3">3. SM3 代码实现</h4>
+<p>https://github.com/guoshijiang/NationalSecret</p>
+<h4 id="4-sm3">4. SM3 小结</h4>
+<p>杂凑函数的设计和应用已经发展了几十余年。自第一个直接构造的杂凑函数诞生以来密码学界普遍认为，构造安全的杂凑函数就是构造抗碰撞的压缩函数。然而，随着王小云等人成功破解 MD5 ，等杂凑函数以后，基于传统 MD 结构设计的杂凑函数被证明是不安全的。因此，对杂凑函数的设计与分析又成为了密码学界的一大研究热点，特别是当前最新的杂凑算法的研宄，推动了研究杂凑函数的高潮。SM3 轮数的研究将会是高潮，减少轮数的 SM3 算法进行随机性分析 32 轮、33 轮、34 轮和 35 轮算法的飞来去器攻击方法。但是如何对更多轮数的算法的原根、碰撞和第二原根进行分析也是需要进一步研究的问题。</p>
+<h3 id="sm4">六. SM4 算法原理和代码实战</h3>
+<h4 id="1-sm4">1. SM4 简介</h4>
+<p>SM4  是一种 Feistel  结构的分组密码算法，其分组长度和密钥长度均为128bit。加解密算法与密钥扩张算法都采用 32 轮非线性迭代结构。解密算法与加密算法的结构相同，只是轮密钥的使用顺序相反，即解密算法使用的轮密钥是加密算法使用的轮密钥的逆序。 </p>
+<h4 id="2-sm4">2. SM4 算法描述</h4>
+<h5 id="21_1">2.1. 加解密算法描述</h5>
+<p>定义 为 e 比特的向量集，&lt;&lt;&lt; i 为 32bit 循环左移 i 位，⊕为 32bit 异或。</p>
+<p>现对 SM4 解密算法进行具体介绍。128bit 的明文或密文输入经初始变换分成 4 个字节，与轮密钥经过轮函数的运算经过 32  轮的迭代完成加解密运算。 </p>
+<p>设 明 文 输 入 为 <img alt="enter image description here" src="https://images.gitbook.cn/cb3efb60-79fd-11e9-8dec-3dba4995d575" />密 文 输 出 为<img alt="enter image description here" src="https://images.gitbook.cn/d5ecbf20-79fd-11e9-8dec-3dba4995d575" />，轮 密 钥 为<img alt="enter image description here" src="https://images.gitbook.cn/e2c440b0-79fd-11e9-91d6-116993cb37bb" />，则该算法的加密过程为：</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/1ad39a00-79fe-11e9-969e-fb1e44586b50" /></p>
+<p>在式（1）中， F(.) 称为加密算法的轮函数； T (.)为 <img alt="enter image description here" src="https://images.gitbook.cn/573f4890-79fe-11e9-91d6-116993cb37bb" />  的可逆变换，由非线性变换<img alt="enter image description here" src="https://images.gitbook.cn/7394b390-79fe-11e9-8dec-3dba4995d575" />和线性变换 L 复合而成，即 <img alt="enter image description here" src="https://images.gitbook.cn/91247350-79fe-11e9-91d6-116993cb37bb" />。非线性变换 由 4 个并行的 S 盒构成。设输入为 <img alt="enter image description here" src="https://images.gitbook.cn/ee8e2d60-79fe-11e9-8dec-3dba4995d575" />输出为 <img alt="enter image description here" src="https://images.gitbook.cn/f53b9e90-79fe-11e9-8dec-3dba4995d575" />，则 </p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/ff673a00-79fe-11e9-aee1-59a97a37cd88" />                        (3)</p>
+<p>其中，<img alt="enter image description here" src="https://images.gitbook.cn/0e00ddf0-79ff-11e9-91d6-116993cb37bb" /> 为固定的映射表。 </p>
+<p>线性变换的输入是非线性变换 的输出。设输入为<img alt="enter image description here" src="https://images.gitbook.cn/6dde0900-79ff-11e9-91d6-116993cb37bb" /> ，输出为<img alt="enter image description here" src="https://images.gitbook.cn/731247b0-79ff-11e9-969e-fb1e44586b50" /> ，则： 
+                <img alt="enter image description here" src="https://images.gitbook.cn/7947f0d0-79ff-11e9-8dec-3dba4995d575" />    (4)</p>
+<p>SMS 解密过程与加密变换结构相同，不同的仅是轮密钥的使用顺序，第一轮使用 <img alt="enter image description here" src="https://images.gitbook.cn/95154010-79ff-11e9-aee1-59a97a37cd88" />，第二轮使用 <img alt="enter image description here" src="https://images.gitbook.cn/9d277160-79ff-11e9-8dec-3dba4995d575" />，依此类推。</p>
+<h5 id="22">2.2. 密钥扩展算法</h5>
+<p>该算法中加密算法的轮密钥由加密密钥通过密钥扩展算法生成。  设加密密钥 <img alt="enter image description here" src="https://images.gitbook.cn/43320110-7a00-11e9-aee1-59a97a37cd88" /> 。 令 <img alt="enter image description here" src="https://images.gitbook.cn/4da37f20-7a00-11e9-aee1-59a97a37cd88" />，轮密钥为 <img alt="enter image description here" src="https://images.gitbook.cn/529adbe0-7a00-11e9-91d6-116993cb37bb" />，则轮密钥生成方法为：<img alt="enter image description here" src="https://images.gitbook.cn/589f62e0-7a00-11e9-aee1-59a97a37cd88" />  (5)</p>
+<p>对<img alt="enter image description here" src="https://images.gitbook.cn/7cc4c610-7a00-11e9-aee1-59a97a37cd88" /> </p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/83f8cc60-7a00-11e9-8dec-3dba4995d575" />                  （6） 
+其中， T<em> 变换与加密算法轮函数中的 T 变换基本相同，只将其中的线性变换 L 修改为 L</em>：</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/a5805330-7a00-11e9-91d6-116993cb37bb" />        (7)</p>
+<p>式（5）中的参数 FKi 与式（6）中的参数 CKi 均为固定值。此外， CKi 也可以通过计算得到。 设 ckij 是 CKi 的第 j 个字节，其中 <img alt="enter image description here" src="https://images.gitbook.cn/0f57a970-7a01-11e9-91d6-116993cb37bb" />，即 <img alt="enter image description here" src="https://images.gitbook.cn/1ac3db30-7a01-11e9-91d6-116993cb37bb" /> ，则</p>
+<p><img alt="enter image description here" src="https://images.gitbook.cn/255a1f50-7a01-11e9-91d6-116993cb37bb" />    (8)</p>
+<h4 id="3-sm4">3.  SM4 代码实现</h4>
+<p>https://github.com/guoshijiang/NationalSecret</p>
+<h4 id="4-sm4">4. SM4 小结</h4>
+<p>SM4 密码算法是中国第一次由专业密码机构公布并设计的商用密码算法，到目前为止，尚未发现有任何攻击方法对SM4 算法的安全性产生威胁。</p>
+<h3 id="_3">七. 其他国密算法</h3>
+<h3 id="1-sm7">1. SM7</h3>
+<p>一种分组密码算法。</p>
+<h3 id="2-sm9">2. SM9</h3>
+<p>SM9 是我国采用的一种标识密码标准，由国家密码管理局于2016 年 3 月 28 日发布，相关标准为“GM/T 0044-2016 SM9标识密码算法”。在商用密码体系中，SM9 主要用于用户的身份认证。SM9 算法不需要申请数字证书，适用于互联网应用的各种新兴应用的安全保障。据新华网公开报道，SM9 的加密强度等同于 3072 位密钥的 RSA 加密算法。</p>
+<h3 id="_4">八. 本文小结</h3>
+<p>从目前的密码研究技术来看，现有的国密算法的安全性在一段时间内并不会受到任何攻击性危机，但随着密码学技术和量子计算机的发展，未来的国密将会面临更大的挑战，现有国密算法的改进、新的密码算法和抗量子密码学的研究将会成为国密的研究热点。</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            回到页面顶部
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="页脚" >
+      
+        
+        <a href="../zkp/groth16.html" class="md-footer__link md-footer__link--prev" aria-label="上一页: 第十六章：Groth16 算法介绍和代码实现" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              第十六章：Groth16 算法介绍和代码实现
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../preface/index.html" class="md-footer__link md-footer__link--next" aria-label="下一页: 关于本书" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              关于本书
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["toc.integrate", "navigation.top"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\uff0c\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+        <script src="/mathjax/LaTeX.js"></script>
+      
+    
+    
+  </body>
+</html>
