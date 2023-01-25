@@ -44,7 +44,7 @@
 
 .： 
     ![.： 
-](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/img/1.png)
+](/img/1.png)
 
 ##### 1.2.掩格密码
 
@@ -129,7 +129,7 @@ m个移位代换表由m个字母组成的密钥字确定
 
 .： 
     ![.： 
-](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/img/2.png)
+](/img/2.png)
 
 
 密文为：WORO NNSX ALMK HUOO TETX YFBX ARIX CAHX  
@@ -140,7 +140,7 @@ Enigma转轮组的加密原理，正是多表替代——它通过不断改变�
 
 .： 
     ![.： 
-](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/img/3.png)
+](/img/3.png)
 
 
 
@@ -154,7 +154,7 @@ Enigma转轮组的加密原理，正是多表替代——它通过不断改变�
 
 .： 
     ![.： 
-](https://github.com/guoshijiang/Cryptography_anyone_can_understand/blob/master/img/4.png)
+](/img/4.png)
 
 
 ### 二. 近代密码学

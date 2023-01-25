@@ -1,0 +1,943 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="本书的目标是将苦涩难懂的密码学简单化，让更多人能够读懂密码学，对密码学产生兴趣。阅读本书，需有一定的数学理论基础。书中的密码将以图解和简单易懂的语言叙述密码学的逻辑。">
+      
+      
+      
+        <link rel="canonical" href="https://crypt.wenwoha.com/MPC/index.html">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>第十章：MPC 多方计算概述 - 人人都能看懂的密码学</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#7e56c2">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#mpc" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="人人都能看懂的密码学" class="md-header__button md-logo" aria-label="人人都能看懂的密码学" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            人人都能看懂的密码学
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第十章：MPC 多方计算概述
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/guoshijiang/cryptography/" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="人人都能看懂的密码学" class="md-nav__button md-logo" aria-label="人人都能看懂的密码学" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    人人都能看懂的密码学
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/guoshijiang/cryptography/" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../preface/index.html" class="md-nav__link">
+        第一章：序言
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../history/index.html" class="md-nav__link">
+        第二章：密码学发展简史
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../encryptType/index.html" class="md-nav__link">
+        第三章：对称加密和非对称加密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Hash/index.html" class="md-nav__link">
+        第四章：单向散列函数
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../blockCipher/index.html" class="md-nav__link">
+        第五章：分组加密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MAC/index.html" class="md-nav__link">
+        第六章：消息认证码
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PKI/index.html" class="md-nav__link">
+        第七章：PKI公钥基础设施
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DigitalSignature/index.html" class="md-nav__link">
+        第八章：数字签名
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../share/index.html" class="md-nav__link">
+        第九章：秘密共享
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          第十章：MPC 多方计算概述
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="index.html" class="md-nav__link md-nav__link--active">
+        第十章：MPC 多方计算概述
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mpc" class="md-nav__link">
+    MPC 简述
+  </a>
+  
+    <nav class="md-nav" aria-label="MPC 简述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    一.安全多方计算的发展简史
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    二.多方安全计算的概念
+  </a>
+  
+    <nav class="md-nav" aria-label="二.多方安全计算的概念">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1. 输入隐私性
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2. 计算正确性
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3.去中心化
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    三. 安全多方计算组成模型
+  </a>
+  
+    <nav class="md-nav" aria-label="三. 安全多方计算组成模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_1" class="md-nav__link">
+    1.协议参与者
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_1" class="md-nav__link">
+    2.协议攻击者
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_1" class="md-nav__link">
+    3. 网络条件
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4.通信信道
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    四. 安全多方计算组涉及的密码学协议
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    五. 安全多方计算的应用场景
+  </a>
+  
+    <nav class="md-nav" aria-label="五. 安全多方计算的应用场景">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_2" class="md-nav__link">
+    1.政务应用
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_2" class="md-nav__link">
+    2.金融应用
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_2" class="md-nav__link">
+    3. 医疗应用
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_1" class="md-nav__link">
+    4.创新应用
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5.区块链行业的应用
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    六.总结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ot/index.html" class="md-nav__link">
+        第十一章：不经意传输
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GC/index.html" class="md-nav__link">
+        第十二章：混淆电路
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mpc-implementation.html" class="md-nav__link">
+        第十三章： 具体的 MPC 算法和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/zkp_introduce.html" class="md-nav__link">
+        第十四章：零知识证明简介
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/app.html" class="md-nav__link">
+        第十五章：零知识证明应用
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zkp/groth16.html" class="md-nav__link">
+        第十六章：Groth16 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十七章：Sonic 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十八章：Fractal 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第十九章：Halo 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十章：SuperSonic 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十一章：Marlin 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十二章：Plonk 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        第二十三章：Zk-Stark 算法介绍和代码实现
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../china/index.html" class="md-nav__link">
+        第二十三章：国密
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../preface/index.html" class="md-nav__link">
+        关于本书
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <a href="https://github.com/guoshijiang/cryptography/edit/master/MPC/README.md" title="编辑此页" class="md-content__button md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+  <h1>第十章：MPC 多方计算概述</h1>
+
+<h2 id="mpc">MPC 简述</h2>
+<p>多方安全计算由我国的姚期智教授在 1982 年首次提出，它主要研究的问题是如何在无可信第三方的情况下设计一个函数，可以让多方在不透露任何信息的前提下安全地得到输出．多方安全计算的组成利用了许多密码 学知识，如零知识证明、数字签名等，也利用了分布式计算原理，如广播问题和拜占庭问题．但多方安全计算与传统的密码学、分布式计算之间又存在很大差异。传统密码学是在非安全的环境下，通过加密 的方式实现数据的保护作用．加密机制就是将原有 的信息进行某种规则的变换，即使在传输过程中数据被篡改和泄露也能及时发现，及时补救不用 担心数据被利用．密码学保护的是参与方在攻击方攻击下保护数据的隐私性．而多方安全计算研究的 问题是在各数据参与方之间如何对各参与方的数据进行保护和确保正确．而不同于分布式计算的 是，多方安全计算通过协议来控制计算进程，无第三方控制计算过程，各参与方的地位平等，不存在第三方的干预。</p>
+<p>为了设计安全的多方计算（MPC）协议，人们进行了许多研究，如不经意传输、混淆电路、同态加密和线性秘密共享方案等．安全的 MPC提供了增强的隐私性、正确性和输入的独立性，并保证了输出的交付。区块链非常适合安全的 MPC 协议，因为它们都处理分布式环境中的安全和信任问题。利用基于区块链的安全 MPC 受益的实际场景很多，如 MPC 跨链桥，MPC 分布式钱包。</p>
+<p>多方安全计算早期用于电子选举、门限签名、电子竞拍等场景．随着研究的深入，现已拓展至面向分布式场景的协同计算，包括隐私信息查询、计算预测、联邦机器学习等，并且在政务、医疗、金融 等领域具有广阔的应用前景．例如，2019 年 8 月，谷歌（google）开源了多方安全计算工具—Private Join and Compute, 以帮助组织和机构协同处理机密数据集；2019 年 10 月，脸书（facebook, meta）将安全机器学习框架crypTen 进行开源．我国相关机构和组织积极推动多方安全计算核心技术研发、标准规范制定以及商业应用落地．例如，蚂蚁金服推出了蚂蚁链摩斯多方安全计算平台；华控清交基于多方安全计算技术，实现了高性能通用的安全计算框架 PrivPy 平台；矩阵元推出了隐私机器学习开源框架 Rosetta。</p>
+<h3 id="_1">一.安全多方计算的发展简史</h3>
+<p>1981 年：Michael o.Rabin 提出不经意传输概念</p>
+<p>1982 年：姚期智提出一个两方数据比较百万富翁问题提出，发表了安全计算协议文字，但是仅仅停留在两方</p>
+<p>1987 年：O.Goldreich, S.Mical 和 A.wigderson 通过对任意一种心理游戏分析，提出了密码学安全的可以计算任意函数的安全多方计算协议</p>
+<p>1998 年：O.Goldreich 系统总结了安全多方计算的研究，出版安全多方计算专著</p>
+<p>2008 年：美密会上 Ivam Damgard 等提出了第一个安全多方计算协议</p>
+<p>2015 年：Tal Moran 从理论上解决安全多方计算中的拓扑隐私问题。Hinkelmann 和 Jakoby 对这个理论进行了描述</p>
+<p>2019 年：谷歌和脸书都开源了安全多方计算的框架，同年，咱们币圈的币安也开源了门限签名库 tss-lib 助力币圈的 MPC 事业发展</p>
+<h3 id="_2">二.多方安全计算的概念</h3>
+<p>多方安全计算数学定义：假设存在 n 个参与方 P1, P2 ... Pn，每个参与方都有一个私有输入数据 Xi，所有参与方共同计算某个函数 f(x1，x2 ... xn），且要求在计算结束时，每个参与方 Pi 只能得到私有输入数据 Xi 的输出，而不能获取其他参与方的输入信息及输出结果信息。</p>
+<p>多方安全计算理论主要解决的是各个数据参与者的信息保护和计算正确性问题，能够实现在无第三方的条件下，在保护数据不泄露的前提下 保证计算的正确性，所以多方安全计算的特点有：</p>
+<h4 id="1">1. 输入隐私性</h4>
+<p>多方安全计算在进行计算任务时根据 MPC 节点的计算，从本地查询数据，再根据计算任务进行数据计算，整个过程中，数据都在本地数据库中保存，不存在数据泄露问题，因此保证了输入数据的隐私性。</p>
+<h4 id="2">2. 计算正确性</h4>
+<p>多方安全计算数据参与方根据约定进行任务计算，通过多方安全计算协议进行计算数据的查询、协同计算，因此可以保证计算的正确性。</p>
+<h4 id="3">3.去中心化</h4>
+<p>多方安全计算不存在有特权的参与方或可信第三方，而是采用协议的方式代替第三方，通过协议保证各数据参与方地位权力平等，任何数据拥有者都可开启计算任务。</p>
+<h3 id="_3">三. 安全多方计算组成模型</h3>
+<p>多方安全计算的组成模型主要由４个部分组成：协议参与者、协议攻击者、网络条件和通信信道。</p>
+<h4 id="1_1">1.协议参与者</h4>
+<p>按照协议参与者在协议执行过程中的行为， 可以把协议参与者分为</p>
+<ul>
+<li>诚实的协议参与者: 这类参与者是最理想的协议参与者，根据计算任务时约定好的过程，对照协议执行每个步骤。</li>
+<li>半诚实的协议参与者：这类参与者不会像诚实参与者一样按照协议进行每个步骤，它根据现实情况私下收集所需数据，推导其他参与者的输入数据和输入值，但不会主动攻击或联合其他数据参与者破坏协议，这类参与者由于不主动攻击和联合其他参与者，一般很难被检测到，这对协议的安全性影响很大，一旦半诚实参与者被买通或攻破，其收集到的数据就会被泄露。</li>
+<li>恶意参与者．这类参与者容易被攻击者买通，或者就是攻击者伪装形成的参与者，以此非法获取有用数据。</li>
+</ul>
+<p>在现实情况下，主要存在的是半诚实协议参与者和恶意参与者，因此设计了半诚实模型和恶意敌手模型</p>
+<p>半诚实模型：在协议执行时参与者按照协议规定的流程执行，但是可能会被恶意攻击者监听获取到在协议执行过程中参与者的输入输出以及在协议运行过程中获得的信息。
+恶意敌手模型: 在协 议执行时，攻击者可以通过在其控制下的参与方 进行不合法的输入，或者恶意篡改输入等方法来分析诚实参与者的隐私信息．还可以通过提前终止和拒绝参与等方式导致协议的终止。</p>
+<h4 id="2_1">2.协议攻击者</h4>
+<p>协议攻击者和协议恶意参与者参与协同计算的目的相同，都是通过非法途径来获取数据．与恶意参与者行为不同的是，它可以控制参与者，篡改协议参与者的步骤，使参与者按照其意愿继续执行协议来获取信息。</p>
+<p>攻击者对不诚实参与者的控制可以分为以下 ２种情况
+- 被动攻击/窃听者: 仅仅窃听信道或者获取不诚实参与者在协同计算过程中所得到的信息， 不诚实参与者仍然按照协议约定执行协议步骤。
+- 主动攻击者: 攻击者会改变不诚实参与者的行为，不仅仅窃听或者获取不诚实参与者在协议进行中所得到的信息，还使其按照自己的意愿参与协议来达到窃取信息的目的。</p>
+<h4 id="3_1">3. 网络条件</h4>
+<p>多方安全计算的各数据所有者在进行协同计算任务时都需要通过网络媒介进行连接，在同步网络媒介中，所有的数据参与者将共同拥有同一个全局性的时钟, 所有的信息会在同一个时间段内送达，并且每个数据参与者都能在下一时间段内收到属于自己的数据信息。</p>
+<p>但在非同步网络媒介中，所有数据参与者无法拥有同一个全局性的时钟. 信息从某个数据参与者的本地数据库中发出去，需要经过若干个时间段，数据参与者的接收方才能收到属于自己的数据信息，并且收到的数据信息由于来自不同参与者，接收到的数据信息顺序可能不是真实的发送顺序。</p>
+<h4 id="4">4.通信信道</h4>
+<p>安全多方计算的参与者之间的网络媒介需要信道相连，来完成与其他参与者的数据交换．由于协议攻击者会对不诚实协议参与者进行一定程度的控制，所以将通信信道分为 3 个级别</p>
+<ul>
+<li>安全信道、非安全信道、未认证信道. 攻击者对于安全信道没有控制能力；对非安全信道可以窃听参与者的通信信息，但不能篡改内容；对未认证信道可以完全控制，甚至可以伪装成诚实的参与者参与协议。</li>
+</ul>
+<h3 id="_4">四. 安全多方计算组涉及的密码学协议</h3>
+<p>消息摘要，对称加密和非对称加密，秘密共享，证书，不经意传输和混淆电路等。</p>
+<h3 id="_5">五. 安全多方计算的应用场景</h3>
+<h4 id="1_2">1.政务应用</h4>
+<p>政务数据的公开共享与数据交易可促进政府部门和商业机构的共同发展，但在数据的公开交换过程中会导致政务数据和商业机构查询信息的泄露，利用多方安全计算技术，可以使数据一直存在于政务系统的本地数据库中，在不泄露数据的前提下实现政务数据共享. 多方安全计算为商业机构提供了统一的数据标准，可实现在协同计算中的信息检索、查询、数据跟踪等功能，保证了数据的安全性、隐私性，解决了“数据孤岛”问题。</p>
+<h4 id="2_2">2.金融应用</h4>
+<p>金融领域的营销、风控、反诈骗等，需要机构形成用户的完整画像来评判用户信用，因此需要跨机构联合共同刻画用户画像．跨机构获取数据需要从多个数据结构中获取数据，然后进行数据挖掘与分析. 但在数据的获取过程中可能导致数据信息的泄露，数据被复制粘贴，数据所有者的所有权被复制．多方安全计算技术可以在数据无需归集与共享的情况下实现计算，保护目标数据所有方的隐私及数据资产安全。</p>
+<h4 id="3_2">3. 医疗应用</h4>
+<p>对病患来说，医疗数据具有一定的敏感性、隐私性，也导致医疗数据得不到最大限度的使用，使得医院、药企、设备供应商之间难以实现数据的交换和共享。利用多方安全技术，在相对封闭的医疗数据参与方之间建立一个统一的、安全可信的数据交换网络，可在不泄露医疗数据的前提下，各参 与方都可获取其需要的数据，由此实现医疗数据的有效使用。</p>
+<h4 id="4_1">4.创新应用</h4>
+<p>多方安全计算技术在与边缘计算、区块链、联邦学习、５Ｇ 等新技术的融合中，能够创造更多的新应用．如基于多方安全计算和区块链技术的联合征信，可实现在无可信中心节点保护各参与方商业秘密及隐私数据的前提下，开展征信查询业务，对于解决多头借贷和过度授信问题具有重要意义；如“联邦学习＋区块链”多方安全计算引擎系统研究，可实现多方隐私数据共享，构建数据生态，打破数据孤岛，挖掘数据联合价值，从而实现多方安全计算。</p>
+<h4 id="5">5.区块链行业的应用</h4>
+<p>MPC 跨链桥，多方安全托管钱包，资产的保护</p>
+<h3 id="_6">六.总结</h3>
+<p>多方安全计算技术的研究是为了解决数据拥有者和数据使用者的矛盾，数据拥有者不想泄露数据资源，而数据所有者需要正确的计算结果．一般情况下数据的拥有者也是其他数据的使用者，这就需要数据参与方协同计算，各取所需。多方安全计算在无第三方的条件下，采用协议标准的解决办法，让多个参与方共同合作，协同完成计算，计算所需的数据在整个计算过程中始终保存在本地数据库，这就保证了输入数据的隐私性，各个参与方协同计算，任务完成后返回各自的计算结果， 保证了计算的正确性。多方计算安全适用于政务、 金融、医疗等多个领域，能够实现数据共享交换、数据查询、数据联合分析、数据安全存储等多个功能。</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            回到页面顶部
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="页脚" >
+      
+        
+        <a href="../share/index.html" class="md-footer__link md-footer__link--prev" aria-label="上一页: 第九章：秘密共享" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              第九章：秘密共享
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../ot/index.html" class="md-footer__link md-footer__link--next" aria-label="下一页: 第十一章：不经意传输" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              第十一章：不经意传输
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["toc.integrate", "navigation.top"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\uff0c\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+        <script src="/mathjax/LaTeX.js"></script>
+      
+    
+    
+  </body>
+</html>
