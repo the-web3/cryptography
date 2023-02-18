@@ -70,7 +70,7 @@
 - Layer2: 0xa424Db4D52D8f12Bb0ea4fbe2dEAb6cf7e9cBC87
 
 
-### SavourLabs 社区招募区块链开发者
+### SavourLabs社区招募区块链开发者
 
 目前我们正在在招募 Python, Go, Rust 和 Node 开发工程师，前端开发工程师(Vue 和 React 方向)，产品经理， 视觉设计师和密码学研究员，欢迎有兴趣的朋友联系我们，联系方式如下：
 
