@@ -1,3 +1,6 @@
+[![English](https://img.shields.io/badge/English-README-blue)](EnglishReadme.md)
+
+
 ## 混淆电路
 
 ### 一. 混淆电路的发展现状

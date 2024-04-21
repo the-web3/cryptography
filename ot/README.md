@@ -1,3 +1,5 @@
+[![English](https://img.shields.io/badge/English-README-blue)](EnglishReadme.md)
+
 ## 不经意传输
 
 ### 一.不经意传输发展现状
