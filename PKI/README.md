@@ -1,3 +1,5 @@
+[![English](https://img.shields.io/badge/English-README-blue)](EnglishReadme.md)
+
 # 第 X 章：PKI 公钥基础设施
 
 公钥基础设施(Public Key Infrastructure, PKI)是典型的密码应用技术。在 PKI 系统中， 由证书认证机构(Certification Authority, CA)签发数字证书、绑定 PKI 用户的身份信息和公钥。 PKI 依赖方(Relying Party)预先存储有自己所信任的根 CA 自签名证书,，用来验证与之通信的 PKI 用户的证书链,，从而可信地获得该用户的公钥、用于各种安全服务。

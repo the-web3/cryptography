@@ -1,3 +1,6 @@
+[![English](https://img.shields.io/badge/English-README-blue)](EnglishReadme.md)
+
+
 # 第 N 章：国密
 
 ### 一. 关于本文

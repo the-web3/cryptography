@@ -1,3 +1,6 @@
+[![English](https://img.shields.io/badge/English-README-blue)](EnglishReadme.md)
+
+
 # 第四章：单向散列函数
 
 ## 一. 简介
