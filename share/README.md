@@ -714,8 +714,8 @@ Benaloh 的可验证密明共享方案也是建立在 Shamir 的密朗共享方�
 ```
 #### 6.4 代码库
 
-Java 版本：https://github.com/guoshijiang/beeKey_java
-Node 版本:  https://github.com/eniac-x-labs/dapplink-secret
+- Java 版本：https://github.com/guoshijiang/beeKey_java
+- Node 版本:  https://github.com/eniac-x-labs/dapplink-secret
 
 
 
