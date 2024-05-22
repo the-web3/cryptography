@@ -1,670 +1,553 @@
 [![English](https://img.shields.io/badge/English-README-blue)](EnglishReadme.md)
 
+# 单向散列函数算法深入
 
-# 第四章：单向散列函数
+# 一. 简介
 
-## 一. 简介
 单向散列函数，又称单向Hash函数、杂凑函数，就是把任意长度的输入消息串变化成固定长的输出串且由输出串难以得到输入串的一种函数。这个输出串称为该消息的散列值。一般用于产生消息摘要，密钥加密等.
 
+# 二. MD5 算法
 
-## 二. MD5 算法
+## 1. MD5 简介
 
-### 1. MD5 简介
+MD5：是RSA数据安全公司开发的一种单向散列算法，MD5 被广泛使用，可以用来把不同长度的数据块进行暗码运算成一个128 位的数值。不同的值产生的结果不一样。
 
-MD5：是RSA数据安全公司开发的一种单向散列算法，MD5被广泛使用，可以用来把不同长度的数据块进行暗码运算成一个128位的数值。不同的值产生的结果不一样。
+## 2.MD5 算法流程
 
-### 2.MD5 算法流程
+对 MD5 算法简要的叙述可以为：MD5 以 512 位分组来处理输入的信息，且每一分组又被划分为 16 个 32 位子分组，经过了一系列的处理后，算法的输出由四个32 位分组组成，将这四个 32 位分组级联后将生成一个 128 位散列值。
 
-对MD5算法简要的叙述可以为：MD5 以 512位分组来处理输入的信息，且每一分组又被划分为16个32位子分组，经过了一系列的处理后，算法的输出由四个32位分组组成，将这四个32位分组级联后将生成一个128位散列值。
+**第一步. 填充：**如果输入信息的长度(bit)对 512 求余的结果不等于 448，就需要填充使得对 512 求余的结果等于 448。填充的方法是填充一个 1 和 n 个 0。填充完后，信息的长度就为 N* 512 + 448 (bit)
 
-第一步、填充：如果输入信息的长度(bit)对512求余的结果不等于448，就需要填充使得对512求余的结果等于448。填充的方法是填充一个1和n个0。填充完后，信息的长度就为N*512+448(bit)
+**第二步. 记录信息长度：**用64位来存储填充前信息长度。这64位加在第一步结果的后面，这样信息长度就变为 N * 512+448+64=(N+1)*512位。
 
-第二步、记录信息长度：用64位来存储填充前信息长度。这64位加在第一步结果的后面，这样信息长度就变为N*512+448+64=(N+1)*512位。
-
-第三步、装入标准的幻数（四个整数）：标准的幻数（物理顺序）是（A=(01234567)16，B=(89ABCDEF)16，C=(FEDCBA98)16，D=(76543210)16）。如果在程序中定义应该是:（A=0X67452301L，B=0XEFCDAB89L，C=0X98BADCFEL，D=0X10325476L）。
-
-
-第四步、四轮循环运算：循环的次数是分组的个数（N+1）
-
-1）将每一512字节细分成16个小组，每个小组64位（8个字节）
-
-2）先认识四个线性函数(&是与,|是或,~是非,^是异或)
+**第三步. 装入标准的幻数（四个整数）：**标准的幻数（物理顺序）是
 
 ```
-F(X,Y,Z)=(X&Y)|((~X)&Z)
-G(X,Y,Z)=(X&Z)|(Y&(~Z))
-H(X,Y,Z)=X^Y^Z
-I(X,Y,Z)=Y^(X|(~Z))
-3）设Mj表示消息的第j个子分组（从0到15）
-
-FF(a,b,c,d,Mj,s,ti)表示a=b+((a+F(b,c,d)+Mj+ti)<<<s)
-GG(a,b,c,d,Mj,s,ti)表示a=b+((a+G(b,c,d)+Mj+ti)<<<s)
-HH(a,b,c,d,Mj,s,ti)表示a=b+((a+H(b,c,d)+Mj+ti)<<<s)
-II(a,b,c,d,Mj,s,ti)表示a=b+((a+I(b,c,d)+Mj+ti)<<<s)
+A=(01234567)16，
+B=(89ABCDEF)16，
+C=(FEDCBA98)16，
+D=(76543210)16
 ```
 
-4）四轮运算
- 第一轮
- 
-```
-a=FF(a,b,c,d,M0,7,0xd76aa478)
-b=FF(d,a,b,c,M1,12,0xe8c7b756)
-c=FF(c,d,a,b,M2,17,0x242070db)
-d=FF(b,c,d,a,M3,22,0xc1bdceee)
-a=FF(a,b,c,d,M4,7,0xf57c0faf)
-b=FF(d,a,b,c,M5,12,0x4787c62a)
-c=FF(c,d,a,b,M6,17,0xa8304613)
-d=FF(b,c,d,a,M7,22,0xfd469501)
-a=FF(a,b,c,d,M8,7,0x698098d8)
-b=FF(d,a,b,c,M9,12,0x8b44f7af)
-c=FF(c,d,a,b,M10,17,0xffff5bb1)
-d=FF(b,c,d,a,M11,22,0x895cd7be)
-a=FF(a,b,c,d,M12,7,0x6b901122)
-b=FF(d,a,b,c,M13,12,0xfd987193)
-c=FF(c,d,a,b,M14,17,0xa679438e)
-d=FF(b,c,d,a,M15,22,0x49b40821)
-```
-
-第二轮
+如果在程序中定义应该是:
 
 ```
-a=GG(a,b,c,d,M1,5,0xf61e2562)
-b=GG(d,a,b,c,M6,9,0xc040b340)
-c=GG(c,d,a,b,M11,14,0x265e5a51)
-d=GG(b,c,d,a,M0,20,0xe9b6c7aa)
-a=GG(a,b,c,d,M5,5,0xd62f105d)
-b=GG(d,a,b,c,M10,9,0x02441453)
-c=GG(c,d,a,b,M15,14,0xd8a1e681)
-d=GG(b,c,d,a,M4,20,0xe7d3fbc8)
-a=GG(a,b,c,d,M9,5,0x21e1cde6)
-b=GG(d,a,b,c,M14,9,0xc33707d6)
-c=GG(c,d,a,b,M3,14,0xf4d50d87)
-d=GG(b,c,d,a,M8,20,0x455a14ed)
-a=GG(a,b,c,d,M13,5,0xa9e3e905)
-b=GG(d,a,b,c,M2,9,0xfcefa3f8)
-c=GG(c,d,a,b,M7,14,0x676f02d9)
-d=GG(b,c,d,a,M12,20,0x8d2a4c8a)
+A=0X67452301L
+B=0XEFCDAB89L
+C=0X98BADCFEL
+D=0X10325476L
 ```
 
-第三轮
+**第四步.四轮循环运算：**循环的次数是分组的个数（N+1）
+
+将每一512 字节细分成 16 个小组，每个小组 64 位（8个字节）
+
+先认识四个线性函数(&是与,|是或,~是非,^是异或)
+
+
+
+
 
 ```
-a=HH(a,b,c,d,M5,4,0xfffa3942)
-b=HH(d,a,b,c,M8,11,0x8771f681)
-c=HH(c,d,a,b,M11,16,0x6d9d6122)
-d=HH(b,c,d,a,M14,23,0xfde5380c)
-a=HH(a,b,c,d,M1,4,0xa4beea44)
-b=HH(d,a,b,c,M4,11,0x4bdecfa9)
-c=HH(c,d,a,b,M7,16,0xf6bb4b60)
-d=HH(b,c,d,a,M10,23,0xbebfbc70)
-a=HH(a,b,c,d,M13,4,0x289b7ec6)
-b=HH(d,a,b,c,M0,11,0xeaa127fa)
-c=HH(c,d,a,b,M3,16,0xd4ef3085)
-d=HH(b,c,d,a,M6,23,0x04881d05)
-a=HH(a,b,c,d,M9,4,0xd9d4d039)
-b=HH(d,a,b,c,M12,11,0xe6db99e5)
-c=HH(c,d,a,b,M15,16,0x1fa27cf8)
-d=HH(b,c,d,a,M2,23,0xc4ac5665)
+F(X, Y, Z) = (X & Y) | (~X & Z)
+G(X, Y, Z) = (X & Z) | (Y & ~Z)
+H(X, Y, Z) = X ^ Y ^ Z
+I(X, Y, Z) = Y ^ (X | ~Z)
 ```
 
-第四轮
+对于每一个512位的块，将A, B, C, D保存到变量a, b, c, d中。MD5算法定义了64个操作（16次每种基本操作F, G, H, I，每种操作的顺序如下）：
+
+四轮运算，每轮 16 步，总共 64 步。
+
+每一步包含以下操作
+
+
+
+
 
 ```
-a=II(a,b,c,d,M0,6,0xf4292244)
-b=II(d,a,b,c,M7,10,0x432aff97)
-c=II(c,d,a,b,M14,15,0xab9423a7)
-d=II(b,c,d,a,M5,21,0xfc93a039)
-a=II(a,b,c,d,M12,6,0x655b59c3)
-b=II(d,a,b,c,M3,10,0x8f0ccc92)
-c=II(c,d,a,b,M10,15,0xffeff47d)
-d=II(b,c,d,a,M1,21,0x85845dd1)
-a=II(a,b,c,d,M8,6,0x6fa87e4f)
-b=II(d,a,b,c,M15,10,0xfe2ce6e0)
-c=II(c,d,a,b,M6,15,0xa3014314)
-d=II(b,c,d,a,M13,21,0x4e0811a1)
-a=II(a,b,c,d,M4,6,0xf7537e82)
-b=II(d,a,b,c,M11,10,0xbd3af235)
-c=II(c,d,a,b,M2,15,0x2ad7d2bb)
-d=II(b,c,d,a,M9,21,0xeb86d391)
+a = b + ((a + F(b, c, d) + X[k] + T[i]) <<< s)
 ```
 
-5）每轮循环后，将A，B，C，D分别加上a，b，c，d，然后进入下一循环。
+其中：
 
-### 3.MD5 用途
+- "<<< s" 表示左旋转s位。
+- X[k] 表示当前块的第k个32位子块。
+- T[i] 表示常量表中的第i个常量（使用正弦函数的整数部分乘以2^32取整得到）。
+- F 是辅助函数之一，具体使用哪个函数由当前步骤所属的轮次决定。
 
-#### 3.1.一致性验证
+**第五步：更新缓冲区**
+
+完成一轮64步操作后，将 a, b, c, d 加到 A, B, C, D 中：
+
+
+
+
+
+```
+A = A + a
+B = B + b
+C = C + c
+D = D + d
+```
+
+**第六步： 输出哈希值**
+
+处理完所有消息块后，连接 A, B, C, D 的低位字节序得到最终的哈希值。
+
+## 3.MD5 用途
+
+**3.1.一致性验证**
 
 MD5的典型应用是对一段文本信息产生信息摘要，以防止被篡改。常常在某些软件下载站点的某软件信息中看到其MD5值，它的作用就在于我们可以在下载该软件后，对下载回来的文件用专门的软件（如Windows MD5 Check等）做一次MD5校验，以确保我们获得的文件与该站点提供的文件为同一文件。
 
-#### 3.2.数字证书
+**3.2.数字证书**
 
 如果有一个第三方的认证机构，用MD5还可以防止文件作者的“抵赖”，这就是所谓的数字签名应用。
 
-#### 3.3.安全访问认证
+**3.3.安全访问认证**
 
 在Unix系统中用户的密码是以MD5（或其它类似的算法）经Hash运算后存储在文件系统中。当用户登录的时候，系统把用户输入的密码进行MD5 Hash运算，然后再去和保存在文件系统中的MD5值进行比较，进而确定输入的密码是否正确。通过这样的步骤，系统在并不知道用户密码的明码的情况下就可以确定用户登录系统的合法性。
 
+## **4.MD5 安全性**
+
+不再具备安全性保障，已经破解，尽管 MD5 已被证明不再安全，但其算法过程仍然是理解哈希函数的经典案例。
+
+## **5.MD5 代码实现**
+
+```
+import struct
+
+def md5(message):
+    # 初始化四个缓冲区
+    A = 0x67452301
+    B = 0xefcdab89
+    C = 0x98badcfe
+    D = 0x10325476
+    
+    # 定义辅助函数
+    def F(x, y, z): return (x & y) | (~x & z)
+    def G(x, y, z): return (x & z) | (y & ~z)
+    def H(x, y, z): return x ^ y ^ z
+    def I(x, y, z): return y ^ (x | ~z)
+    
+    def left_rotate(x, n):
+        return (x << n) | (x >> (32 - n))
+    
+    # 预定义的常数
+    T = [int(4294967296 * abs(sin(i + 1))) & 0xFFFFFFFF for i in range(64)]
+    
+    # 消息填充
+    original_byte_len = len(message)
+    original_bit_len = original_byte_len * 8
+    message += b'\x80'
+    message += b'\x00' * ((56 - len(message) % 64) % 64)
+    message += struct.pack('<Q', original_bit_len)
+    
+    # 处理消息块
+    for i in range(0, len(message), 64):
+        a, b, c, d = A, B, C, D
+        block = message[i:i+64]
+        X = struct.unpack('<16I', block)
+        
+        # 主循环
+        for j in range(64):
+            if 0 <= j <= 15:
+                f = F(b, c, d)
+                g = j
+            elif 16 <= j <= 31:
+                f = G(b, c, d)
+                g = (5 * j + 1) % 16
+            elif 32 <= j <= 47:
+                f = H(b, c, d)
+                g = (3 * j + 5) % 16
+            elif 48 <= j <= 63:
+                f = I(b, c, d)
+                g = (7 * j) % 16
+            
+            temp = d
+            d = c
+            c = b
+            b = b + left_rotate((a + f + T[j] + X[g]) & 0xFFFFFFFF, [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+                                                                   5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
+                                                                   4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+                                                                   6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21][j])
+            a = temp
+        
+        # 将结果加到当前的哈希值
+        A = (A + a) & 0xFFFFFFFF
+        B = (B + b) & 0xFFFFFFFF
+        C = (C + c) & 0xFFFFFFFF
+        D = (D + d) & 0xFFFFFFFF
+    
+    # 输出最终哈希值
+    return struct.pack('<4I', A, B, C, D).hex()
+
+# 测试MD5函数
+print(md5(b"hello world"))
+```
 
 ## 三.SHA 算法
 
-安全散列算法（英语：Secure Hash Algorithm，缩写为SHA）是一个密码散列函数家族，能计算出一个数字消息所对应到的，长度固定的字符串（又称消息摘要）的算法。且若输入的消息不同，它们对应到不同字符串的机率很高。SHA家族算法分别是SHA-0；SHA-1；SHA-224、SHA-256、SHA-384，SHA-512和SHA3。SHA-224、SHA-256、SHA-384，SHA-512有时并称为SHA-2， SHA3是第三代安全散列算法(Secure Hash Algorithm 3)，之前名为Keccak 算法，在硬件实做上面，这个算法比起其他算法明显的快上很多，目前 SHA-0，SHA-1 已被破解。
+安全散列算法（英语：Secure Hash Algorithm，缩写为SHA）是一个密码散列函数家族，能计算出一个数字消息所对应到的，长度固定的字符串（又称消息摘要）的算法。且若输入的消息不同，它们对应到不同字符串的机率很高。SHA家族算法分别是SHA-0；SHA-1；SHA-224、SHA-256、SHA-384，SHA-512和SHA3。SHA-224、SHA-256、SHA-384，SHA-512 有时并称为 SHA-2， SHA3 是第三代安全散列算法(Secure Hash Algorithm 3)，之前名为 Keccak 算法，在硬件实做上面，这个算法比起其他算法明显的快上很多，目前 SHA-0，SHA-1 已被破解。
 
-### 1. Sha-0 和 Sha-1
+## 1. Sha-0 和 Sha-1
 
-最初载明的算法于1993年发布，称做安全散列标准（Secure Hash Standard），FIPS PUB 180。这个版本现在常被称为SHA-0。它在发布之后很快就被NSA撤回，并且由1995年发布的修订版本FIPS PUB 180-1（通常称为SHA-1）取代。SHA-1和SHA-0的算法只在压缩函数的消息转换部分差了一个比特的循环位移。根据NSA的说法，它修正了一个在原始算法中会降低散列安全性的弱点。然而NSA并没有提供任何进一步的解释或证明该弱点已被修正。而后SHA-0和SHA-1的弱点相继被攻破，SHA-1似乎是显得比SHA-0有抵抗性，这多少证实了NSA当初修正算法以增进安全性的声明。
+最初载明的算法于 1993 年发布，称做安全散列标准（Secure Hash Standard），FIPS PUB 180。这个版本现在常被称为 SHA-0。它在发布之后很快就被 NSA 撤回，并且由1995年发布的修订版本FIPS PUB 180-1（通常称为SHA-1）取代。SHA-1 和 SHA-0 的算法只在压缩函数的消息转换部分差了一个比特的循环位移。根据NSA的说法，它修正了一个在原始算法中会降低散列安全性的弱点。然而 NSA 并没有提供任何进一步的解释或证明该弱点已被修正。而后 SHA-0 和 SHA-1的弱点相继被攻破，SHA-1 似乎是显得比 SHA-0 有抵抗性，这多少证实了NSA当初修正算法以增进安全性的声明。
 
-SHA-0 和 SHA-1可将一个最大264比特的消息，转换成一串160位的消息摘要；其设计原理相似于MIT教授Ronald L. Rivest所设计的密码学散列算法MD4和MD5。
+SHA-0 和 SHA-1可将一个最大 264 比特的消息，转换成一串 160 位的消息摘要；其设计原理相似于 MIT 教授 Ronald L. Rivest 所设计的密码学散列算法 MD4和 MD5。
 
-#### 1.1.SHA-0破解
+## **1.1.SHA-0 破解**
 
-在CRYPTO 98上，两位法国研究者提出一种对SHA-0的攻击方式：在261的计算复杂度之内，就可以发现一次碰撞（即两个不同的讯息对应到相同的讯息摘要）；这个数字小于生日攻击法所需的2的80次方，也就是说，存在一种算法，使其安全性不到一个理想的杂凑函数抵抗攻击所应具备的计算复杂度。
+在 CRYPTO 98上，两位法国研究者提出一种对 SHA-0 的攻击方式：在 261 的计算复杂度之内，就可以发现一次碰撞（即两个不同的讯息对应到相同的讯息摘要）；这个数字小于生日攻击法所需的 2 的 80次方，也就是说，存在一种算法，使其安全性不到一个理想的杂凑函数抵抗攻击所应具备的计算复杂度。
 
-2004年时，Biham和 Chen也发现了SHA-0的近似碰撞，也就是两个讯息可以杂凑出几乎相同的数值；其中162位元中有142位元相同。他们也发现了SHA-0的完整碰撞（相对于近似碰撞），将本来需要80次方的复杂度降低到62次方。
+2004年时，Biham和 Chen也发现了SHA-0 的近似碰撞，也就是两个讯息可以杂凑出几乎相同的数值；其中162位元中有142位元相同。他们也发现了SHA-0的完整碰撞（相对于近似碰撞），将本来需要80次方的复杂度降低到62次方。
 
 2004年8月12日，Joux, Carribault, Lemuet和Jalby宣布找到SHA-0算法的完整碰撞的方法，这是归纳Chabaud和Joux的攻击所完成的结果。发现一个完整碰撞只需要251的计算复杂度。他们使用的是一台有256颗Itanium2处理器的超级电脑，约耗80,000 CPU工时。
 
 2004年8月17日，在CRYPTO 2004的Rump会议上，王小云，冯登国、来学嘉，和于红波宣布了攻击MD5、SHA-0 和其他杂凑函数的初步结果。他们攻击SHA-0的计算复杂度是2的40次方，这意味着他们的攻击成果比Joux还有其他人所做的更好。请参见MD5 安全性。2005年二月，王小云和殷益群、于红波再度发表了对SHA-0破密的算法，可在2的39次方的计算复杂度内就找到碰撞。
 
-#### 1.2.SHA-1破解
+## **1.2.SHA-1 破解**
 
-鉴于SHA-0的破密成果，专家们建议那些计划利用SHA-1实作密码系统的人们也应重新考虑。在2004年CRYPTO会议结果公布之后，NIST即宣布他们将逐渐减少使用SHA-1，改以SHA-2取而代之。
+鉴于 SHA-0 的破密成果，专家们建议那些计划利用 SHA-1 实作密码系统的人们也应重新考虑。在 2004 年 CRYPTO 会议结果公布之后，NIST 即宣布他们将逐渐减少使用 SHA-1，改以 SHA-2 取而代之。
 
-2005年，Rijmen和Oswald发表了对SHA-1较弱版本（53次的加密循环而非80次）的攻击：在2的80次方的计算复杂度之内找到碰撞。
+2005年，Rijmen 和 Oswald 发表了对 SHA-1 较弱版本（53次的加密循环而非80次）的攻击：在2的80次方的计算复杂度之内找到碰撞。
 
-2005年二月，王小云、殷益群及于红波发表了对完整版SHA-1的攻击，只需少于2的69次方的计算复杂度，就能找到一组碰撞。（利用生日攻击法找到碰撞需要2的80次方的计算复杂度。）
+2005年二月，王小云、殷益群及于红波发表了对完整版 SHA-1 的攻击，只需少于 2 的 69 次方的计算复杂度，就能找到一组碰撞。（利用生日攻击法找到碰撞需要 2 的 80 次方的计算复杂度。）
 
-这篇论文的作者们写道；“我们的破密分析是以对付SHA-0的差分攻击、近似碰撞、多区块碰撞技术、以及从MD5算法中寻找碰撞的讯息更改技术为基础。没有这些强力的分析工具，SHA-1就无法破解。”此外，作者还展示了一次对58次加密循环SHA-1的破密，在2的33次方个单位操作内就找到一组碰撞。完整攻击方法的论文发表在2005年八月的CRYPTO会议中。
+这篇论文的作者们写道；“我们的破密分析是以对付 SHA-0 的差分攻击、近似碰撞、多区块碰撞技术、以及从MD5算法中寻找碰撞的讯息更改技术为基础。没有这些强力的分析工具，SHA-1 就无法破解。”此外，作者还展示了一次对 58 次加密循环 SHA-1 的破密，在 2 的 33 次方个单位操作内就找到一组碰撞。完整攻击方法的论文发表在 2005 年八月的 CRYPTO 会议中。
 
 殷益群在一次面谈中如此陈述：“大致上来说，我们找到了两个弱点：其一是前置处理不够复杂；其二是前20个循环中的某些数学运算会造成不可预期的安全性问题。”
 
-2005年8月17日的CRYPTO会议尾声中王小云、姚期智、姚储枫再度发表更有效率的SHA-1攻击法，能在2的63次方个计算复杂度内找到碰撞。
+2005 年 8 月 17 日的 CRYPTO 会议尾声中王小云、姚期智、姚储枫再度发表更有效率的 SHA-1 攻击法，能在 2的 63 次方个计算复杂度内找到碰撞。
 
-2006年的CRYPTO会议上，Christian Rechberger和Christophe De Cannière宣布他们能在容许攻击者决定部分原讯息的条件之下，找到SHA-1的一个碰撞。
+2006年的 CRYPTO 会议上，Christian Rechberger 和 Christophe De Cannière宣布他们能在容许攻击者决定部分原讯息的条件之下，找到SHA-1的一个碰撞。
 
 在密码学的学术理论中，任何攻击方式，其计算复杂度若少于暴力搜寻法所需要的计算复杂度，就能被视为针对该密码系统的一种破密法；但这并不表示该破密法已经可以进入实际应用的阶段。
 
 就应用层面的考量而言，一种新的破密法出现，暗示着将来可能会出现更有效率、足以实用的改良版本。虽然这些实用的破密法版本根本还没诞生，但确有必要发展更强的杂凑算法来取代旧的算法。在“碰撞”攻击法之外，另有一种反译攻击法（Pre-image attack），就是由杂凑出的字串反推原本的讯息；反译攻击的严重性更在碰撞攻击之上，但也更困难。在许多会应用到密码杂凑的情境（如用户密码的存放、文件的数位签章等）中，碰撞攻击的影响并不是很大。举例来说，一个攻击者可能不会只想要伪造一份一模一样的文件，而会想改造原来的文件，再附上合法的签章，来愚弄持有私密金钥的验证者。另一方面，如果可以从密文中反推未加密前的使用者密码，攻击者就能利用得到的密码登入其他使用者的帐户，而这种事在密码系统中是不能被允许的。但若存在反译攻击，只要能得到指定使用者密码杂凑过后的字串（通常存在影档中，而且可能不会透露原密码资讯），就有可能得到该使用者的密码。
 
-#### 1.3.SHA-1算法
+## 1.3.SHA-1算法
 
-算法的步骤大概跟MD5算法 差不多，运算上更复杂一些。
+算法的步骤大概跟 MD5 算法 差不多，运算上更复杂一些。
 
-#### 3.1、扩充数据
+**1.3.1. 扩充数据**
 
-将数据扩充到512 bits(64 bytes)的倍数，这些n 段512bits(64字节)的数据会作为原始信息进行处理。
+将数据扩充到 512 bits(64 bytes)的倍数，这些 n 段 512bits(64字节)的数据会作为原始信息进行处理。
 
-### 3.2.这一步的处理同MD5算法。
+**1.3.2.这一步的处理同MD5算法。**
 
-#### 3.3.循环运算每一段512bits(64 字节)的数据（MainLoop）
+**1.3.3.循环运算每一段512bits(64 字节)的数据（MainLoop）**
 
-#### 3.4. 跟MD5算法的区别：将512bits数据（16*4字节）扩展为80*4字节进入主循环，进行80次(4组 * 20次)循环，同MD5算法，也是将运算分为4 组：
+**1.3.4. 跟MD5算法的区别**：将 512bits 数据（16*4字节）扩展为 80*4 字节进入主循环，进行80次(4组 * 20次)循环，同MD5算法，也是将运算分为4 组：
 
-F(X,Y,Z)=(X & Y) | ((~X) & Z) 
-
+```
+F(X,Y,Z)=(X & Y) | ((~X) & Z)
 G(X,Y,Z)=X ⊕ Y ⊕ Z
-
 H(X,Y,Z)=(X & Y) | (X & Z) | (Y & Z)
-
 I(X,Y,Z)=X ⊕ Y ⊕ Z
+```
 
 其中，& 是与运算， | 是或运算，~ 是取反运算，⊕ 是异或运算
 
-也就是说函数F 是前20次循环使用的，G函数是21 至 40次循环使用，H 函数是41 至60次循环使用，I 函数是最后20次循环使用。
+也就是说函数 F 是前 20 次循环使用的，G 函数是 21 至 40次循环使用，H 函数是 41 至 60 次循环使用，I 函数是最后 20 次循环使用。
 
 A、B、C、D 、E分别是上一段512bits 处理后留下来的5个整数(第一次运算的时候这5个数为固定的常数)。
 
 在对该512bits 数据运算前需要先把这5个整数临时存起来（后面会使用到）。
 
+```
 A'=A;
-
 B'=B;
-
 C'=C;
-
 D'=D;
-
 E'=E;
+```
 
-开始进入512bits 数据的运算。F 代表上面提到的 4 组运算函数，B、C、D三个数分别是4组运算函数的参数。  表示一个32 bits(4个字节) 的输入数据(512bits 数据其中的32bits)，  表示一个32bits 的常数(这个也是固定的)。
+开始进入512bits 数据的运算。F 代表上面提到的 4 组运算函数，B、C、D三个数分别是 4 组运算函数的参数。 表示一个32 bits(4个字节) 的输入数据(512bits 数据其中的32bits)， 表示一个32bits 的常数(这个也是固定的)。
 
 将运算总结成公式：
 
-temp = shift(A, 5) + F() + E +  + ;
-
+```
+temp = shift(A, 5) + F() + E + + ;
 E = D;
-
 D = C;
-
 C = shift(B, 30);
-
 B = A;
-
 A = temp;
+```
 
-将每一组运算后得到最新的5个数A、B、C、D、E作为下一组运算的A、B、C、D、E，一直到4组运算(80次循环) 彻底结束。一段512bits 的80 次循环结束之后，需要为下一段512bits 的80 次循环准备新的A、B、C、D、E。将上一段80 次循环后最终得到的A、B、C、D 、E(也就是上面一步得到的最后的5个数)与循环之前的保存下来的初始值A'、B'、C'、D'、E' 对应相加。
+将每一组运算后得到最新的5个数A、B、C、D、E作为下一组运算的A、B、C、D、E，一直到 4 组运算(80次循环) 彻底结束。一段 512bits 的 80 次循环结束之后，需要为下一段 512bits 的80 次循环准备新的A、B、C、D、E。将上一段80 次循环后最终得到的A、B、C、D 、E(也就是上面一步得到的最后的5个数)与循环之前的保存下来的初始值A'、B'、C'、D'、E' 对应相加。
 
+```
 A=A' + A;
-
 B=B' + B;
-
 C=C' + C;
-
 D=D' + D;
-
 E=E' + E;
+```
 
 叠加运算结束，标志该段512bits数据处理完毕。
 
-#### 3.5.最后一段512bits 运算后得到最终的A、B、C、D、E，即为最终的160bits数因为需要得到最后160bits(40 位16进制)的字符串，所以要将每个4字节的数转换成8位的16进制字符串。
+**1.3.5.最后一段 512bits 运算后得到最终的 A、B、C、D、E，即为最终的160bits数因为需要得到最后160bits(40 位16进制)的字符串，所以要将每个4字节的数转换成8位的16进制字符串。**
 
-C++ 代码实现：
-```
-#include<iostream>
-#include<string>
-using namespace std;
-#define shift(x, n) (((x) << (n)) | ((x) >> (32-(n))))//右移的时候，高位一定要补零，而不是补充符号位
-#define F(x, y, z) (((x) & (y)) | ((~x) & (z)))
-#define G(x, y, z) ((x) ^ (y) ^ (z))
-#define H(x, y, z) (((x) & (y)) | ((x) & (z)) | ((y) & (z)))
-#define I(x, y, z) G(x, y, z)
-
-#define A 0x67452301
-#define B 0xefcdab89
-#define C 0x98badcfe
-#define D 0x10325476
-#define E 0xC3D2E1F0
-
-//strBaye的长度
-unsigned int strlength;
-//A,B,C,D的临时变量
-unsigned int atemp;
-unsigned int btemp;
-unsigned int ctemp;
-unsigned int dtemp;
-unsigned int etemp;
-
-const unsigned int k[]={0x5A827999,0x6ED9EBA1,0x8F1BBCDC,0xCA62C1D6};
-
-const char str16[]="0123456789abcdef";
-void mainLoop(unsigned int M[])
-{
-    unsigned int f,g;
-    unsigned int a=atemp;
-    unsigned int b=btemp;
-    unsigned int c=ctemp;
-    unsigned int d=dtemp;
-  unsigned int e=etemp;
-    for (unsigned int i = 0; i < 80; i++)
-    {
-        if(i<20){
-            f=F(b,c,d);
-        }else if (i<40){
-            f=G(b,c,d);
-        }else if(i<60){
-            f=H(b,c,d);
-        }else{
-            f=I(b,c,d);
-        }
-        g=k[i/20];
-
-        unsigned int tmp=shift(a, 5)+f+e+g+M[i];
-        e=d;
-        d=c;
-        c=shift(b, 50);
-        b=a;
-        a=tmp;
-    }
-    atemp=a+atemp;
-    btemp=b+btemp;
-    ctemp=c+ctemp;
-    dtemp=d+dtemp;
-    etemp=e+etemp;
-}
-/*
-*填充函数
-*处理后应满足bits≡448(mod512),字节就是bytes≡56（mode64)
-*填充方式为先加一个1,其它位补零
-*最后加上64位的原来长度
-*/
-unsigned int* add(string str)
-{
-    unsigned int num=((str.length()+8)/64)+1;//以512位,64个字节为一组
-    unsigned int *strByte=new unsigned int[num*16];    //64/4=16,所以有16个整数
-    strlength=num*16;
-    for (unsigned int i = 0; i < num*16; i++)
-        strByte[i]=0;
-    for (unsigned int i=0; i <str.length(); i++)
-    {
-        strByte[i>>2]|=(str[i])<<((i%4)*8);//一个整数存储四个字节，i>>2表示i/4 一个unsigned int对应4个字节，保存4个字符信息
-    }
-    strByte[str.length()>>2]|=0x80<<(((str.length()%4))*8);//尾部添加1 一个unsigned int保存4个字符信息,所以用128左移
-    /*
-    *添加原长度，长度指位的长度，所以要乘8，然后是小端序，所以放在倒数第二个,这里长度只用了32位
-    */
-    strByte[num*16-2]=str.length()*8;
-    return strByte;
-}
-string changeHex(int a)
-{
-    int b;
-    string str1;
-    string str="";
-    for(int i=0;i<4;i++)
-    {
-        str1="";
-        b=((a>>i*8)%(1<<8))&0xff;   //逆序处理每个字节
-        for (int j = 0; j < 2; j++)
-        {
-            str1.insert(0,1,str16[b%16]);
-            b=b/16;
-        }
-        str+=str1;
-    }
-    return str;
-}
-string getSHA1(string source)
-{
-    atemp=A;    //初始化
-    btemp=B;
-    ctemp=C;
-    dtemp=D;
-  etemp=E;
-    unsigned int *strByte=add(source);
-    for(unsigned int i=0;i<strlength/16;i++) //512bits 数据分段
-    {
-        unsigned int num[80];
-        unsigned int j;
-        for(j=0;j<16;j++)
-            num[j]=strByte[i*16+j]; //得到512bits 数据
-
-        for(j=16;j<80;j++)
-            num[j]=shift((num[j-3]^num[j-8]^num[j-14]^num[j-16]), 1); //扩展到80个
-        mainLoop(num); //进入主循环
-    }
-    return changeHex(atemp).append(changeHex(btemp)).append(changeHex(ctemp))
-                   .append(changeHex(dtemp)).append(changeHex(etemp));
-}
-unsigned int main()
-{
-    string ss;
-//    cin>>ss;
-    string s=getSHA1("abc");
-    cout<<s;
-    return 0;
-}
-```
-
-
-### 2. SHA-2
-
-SHA-256，SHA-384和SHA-512 三个函数都将消息对应到更长的消息摘要。以它们的摘要长度（以位元计算）加在原名后面来命名。它们发布于2001年的FIPS PUB 180-2草稿中，随即通过审查和评论。包含SHA-1的FIPS PUB 180-2，于2002年以官方标准发布。2004年2月，发布了一次FIPS PUB 180-2的变更通知，加入了一个额外的变种SHA-224"，这是为了符合双金钥3DES所需的金钥长度而定义。SHA-256和SHA-512是很新的杂凑函数，前者以定义一个word为32位元，后者则定义一个word为64位元。它们分别使用了不同的偏移量，或用不同的常数，然而，实际上二者结构是相同的，只在循环执行的次数上有所差异。SHA-224以及SHA-384则是前述二种杂凑函数的截短版，利用不同的初始值做计算。这些新的杂凑函数并没有接受像SHA-1一样的公众密码社群做详细的检验，所以它们的密码安全性还不被大家广泛的信任。Gilbert和Handschuh在2003年曾对这些新变种作过一些研究，声称他们没有找到弱点。我们大概可以将SHA-2分为两类，两类使用不同的偏移量、不同的敞亮、不同的循环次数、不同的数据长度。但是两类的运算结构是相同的。SHA-256 和 SHA-224: 其中SHA-224是SHA-256 的截短版，运算的数据都是32位(4字节)，核心循环次数为64次。SHA-512 和 SHA-384:其中SHA-384是SHA-512 的截短版，运算的数据都是64位(8字节)，核心循环次数为80次。
-
-#### 2.1 SHA-256 算法
-
-##### 2.1.1.扩充数据
-
-同MD5 算法、SHA-1 算法，第一步还是要将数据填充为512 bits 的整数倍，也就是64字节的整数倍。这些n 段512bits(64字节)的数据会作为原始信息进行处理
-
-##### 2.1.2.循环运算每一段512bits(64 字节)的数据（MainLoop）
-
-将512bits数据（16*4字节）扩展为64*4字节，对于SHA-256 算法是64次循环，会将16 * 4 字节(32位)扩展到64 * 4字节(32位)。相比，SHA-512 算法是80次循环，所以会将16 * 8字节(64位)扩展到80 * 8字节(64位)。
-
-下面是SHA-256 扩展的伪代码：
+**1.3.6.源码实现**
 
 ```
-Extend the sixteen 32-bit words into sixty-four 32-bit words:
-for i from 16 to 63
-    s0 := (w[i-15] rightrotate 7) xor (w[i-15] rightrotate 18) xor(w[i-15] rightshift 3)
-    s1 := (w[i-2] rightrotate 17) xor (w[i-2] rightrotate 19) xor(w[i-2] rightshift 10)
-    w[i] := w[i-16] + s0 + w[i-7] + s1
- 
+import struct
+
+def sha1(message):
+    # 初始化缓冲区
+    H0 = 0x67452301
+    H1 = 0xEFCDAB89
+    H2 = 0x98BADCFE
+    H3 = 0x10325476
+    H4 = 0xC3D2E1F0
+    
+    # 消息填充
+    original_byte_len = len(message)
+    original_bit_len = original_byte_len * 8
+    message += b'\x80'
+    message += b'\x00' * ((56 - len(message) % 64) % 64)
+    message += struct.pack('>Q', original_bit_len)
+    
+    # 处理消息块
+    for i in range(0, len(message), 64):
+        W = list(struct.unpack('>16I', message[i:i+64]))
+        
+        # 扩展消息
+        for t in range(16, 80):
+            W.append((W[t-3] ^ W[t-8] ^ W[t-14] ^ W[t-16]) << 1 & 0xFFFFFFFF)
+        
+        # 初始化变量
+        A = H0
+        B = H1
+        C = H2
+        D = H3
+        E = H4
+        
+        # 主循环
+        for t in range(80):
+            if 0 <= t <= 19:
+                K = 0x5A827999
+                f = (B & C) | ((~B) & D)
+            elif 20 <= t <= 39:
+                K = 0x6ED9EBA1
+                f = B ^ C ^ D
+            elif 40 <= t <= 59:
+                K = 0x8F1BBCDC
+                f = (B & C) | (B & D) | (C & D)
+            elif 60 <= t <= 79:
+                K = 0xCA62C1D6
+                f = B ^ C ^ D
+            
+            temp = (A << 5 | A >> (32 - 5)) + f + E + K + W[t] & 0xFFFFFFFF
+            E = D
+            D = C
+            C = B << 30 | B >> (32 - 30)
+            B = A
+            A = temp
+        
+        # 更新缓冲区
+        H0 = (H0 + A) & 0xFFFFFFFF
+        H1 = (H1 + B) & 0xFFFFFFFF
+        H2 = (H2 + C) & 0xFFFFFFFF
+        H3 = (H3 + D) & 0xFFFFFFFF
+        H4 = (H4 + E) & 0xFFFFFFFF
+    
+    # 输出最终哈希值
+    return ''.join([f'{x:08x}' for x in [H0, H1, H2, H3, H4]])
+
+# 测试SHA-1函数
+print(sha1(b"hello world"))
 ```
 
-从第 17个开始进行扩展，用C 代码表示为：
+**1.3.7.Sha-0 和安全性**
 
-进入主循环，进行64次循环,这里的64次循环跟MD5 算法、SHA-1 算法 有一些区别，这里不会再分几组，而是64次都是相同的操作。
+SHA-1 算法通过填充消息、初始化缓冲区、扩展消息块、主循环处理每个消息块、以及更新缓冲区来生成哈希值。尽管SHA-1已被证明存在安全漏洞，但其算法过程对于理解加密哈希函数仍然是一个重要的参考案例。
 
-但是还是需要4个函数：
+## 2. SHA-2
+
+SHA-256，SHA-384 和 SHA-512  三个函数都将消息对应到更长的消息摘要。以它们的摘要长度（以位元计算）加在原名后面来命名。它们发布于2001年的FIPS PUB 180-2 草稿中，随即通过审查和评论。包含 SHA-1 的FIPS PUB 180-2，于 2002 年以官方标准发布。2004年2月，发布了一次FIPS PUB 180-2的变更通知，加入了一个额外的变种SHA-224"，这是为了符合双金钥3DES所需的金钥长度而定义。SHA-256和SHA-512是很新的杂凑函数，前者以定义一个word为32位元，后者则定义一个word为64位元。它们分别使用了不同的偏移量，或用不同的常数，然而，实际上二者结构是相同的，只在循环执行的次数上有所差异。SHA-224以及SHA-384则是前述二种杂凑函数的截短版，利用不同的初始值做计算。这些新的杂凑函数并没有接受像SHA-1一样的公众密码社群做详细的检验，所以它们的密码安全性还不被大家广泛的信任。Gilbert和Handschuh在2003年曾对这些新变种作过一些研究，声称他们没有找到弱点。我们大概可以将SHA-2分为两类，两类使用不同的偏移量、不同的敞亮、不同的循环次数、不同的数据长度。但是两类的运算结构是相同的。SHA-256 和 SHA-224: 其中SHA-224是SHA-256 的截短版，运算的数据都是32位(4字节)，核心循环次数为64次。SHA-512 和 SHA-384:其中SHA-384是SHA-512 的截短版，运算的数据都是64位(8字节)，核心循环次数为80次。
+
+## 2.1. SHA-256 算法
+
+**2.1.1. 消息填充**
+
+同 MD5 算法、SHA-1 算法，第一步还是要将数据填充为 512 bits 的整数倍，也就是 64 字节的整数倍。这些 n 段 512bits(64字节)的数据会作为原始信息进行处理
+
+消息填充的目的是使消息的长度（以位为单位）与448模512同余，即比512的倍数少64位。
+
+- 首先在消息末尾添加一个“1”位。
+- 然后不断添加“0”直到消息长度模512等于448。
+- 最后，将消息的长度（以位为单位）作为64位整数附加到填充消息的末尾。
+
+**2.1.2. 初始化缓冲区**
+
+SHA-256使用八个32位的缓冲区变量来保存中间和最终的哈希值。缓冲区变量初始化如下：
 
 ```
-Sigma0(x)=shift(x, 30) ⊕ shift(x, 19) ⊕ shift(x, 10);
-Sigma1(x)=shift(x, 26) ⊕ shift(x, 21) ⊕ shift(x, 7);
-Maj(x,y,z)=(x & y) ⊕ (x & z) ⊕ (y & z);
-Ch(x,y,z)=(x & y) ⊕ (~x & z);
+H0 = 0x6A09E667
+H1 = 0xBB67AE85
+H2 = 0x3C6EF372
+H3 = 0xA54FF53A
+H4 = 0x510E527F
+H5 = 0x9B05688C
+H6 = 0x1F83D9AB
+H7 = 0x5BE0CD19
 ```
 
-其中，& 是与运算， | 是或运算，~ 是取反运算，⊕ 是异或运算
+**2.1.3. 处理消息块**
 
-具体的运算流程如下图所示：
+填充后的消息被划分为长度为512位（即16个32位字）的块。对每一个512位的块进行以下操作：
 
-![image](https://user-images.githubusercontent.com/19474106/119256608-14c80800-bbf4-11eb-92fe-84ca5db9156b.png)
+- **消息分组**
 
+每一个512位的消息块被划分为16个32位的字，记作 𝑊[0],𝑊[1],…,𝑊[15]。
 
-A、B、C、D 、E、F、G、H分别是上一段512bits 处理后留下来的8个整数(第一次运算的时候这8个数为固定的常数)。在对该512bits 数据运算前需要先把这8个整数临时存起来（后面会使用到）。表示一个32 bits(4个字节) 的输入数据(512bits 数据其中的32bits)， 表示一个32bits 的常数(这个也是固定的)。
+- **扩展消息**
 
-将上图运算总结成公式：
+将这16个字扩展成64个字：
 
 ```
-s0 = Sigma0(A);
-
-maj = Ma(A, B, C);
-s1 = Sigma1(E);
-ch = Ch(E, F, G);
-t1 = H + s1 + ch + k[i] + M[i];
-H = G;
-G = F;
-F = E;
-E = D + t1;
-D = C;
-C = B;
-B = A;
-
-A = t1 + s0 + maj;
+for t in range(16, 64):
+    s0 = (right_rotate(W[t-15], 7) ^ right_rotate(W[t-15], 18) ^ (W[t-15] >> 3))
+    s1 = (right_rotate(W[t-2], 17) ^ right_rotate(W[t-2], 19) ^ (W[t-2] >> 10))
+    W.append((W[t-16] + s0 + W[t-7] + s1) & 0xFFFFFFFF)
 ```
 
+- **初始化变量**
 
-将每一组运算后得到最新的8个数A、B、C、D、E、F、G、H作为下一组运算的初始值，一直到64 次循环彻底结束。一段512bits 的64 次循环结束之后，需要为下一段512bits 准备新的A、B、C、D、E、F、G、H。将上一段64 次循环后最终得到的A、B、C、D、E、F、G、H(也就是上面一步得到的最后的8个数)与循环之前的保存下来的初始值对应相加。
+将缓冲区变量的当前值赋值给工作变量：
 
-##### 2.1.3.最后一段512bits 运算后得到最终的A、B、C、D、E，即为最终的160bits数因为需要得到最后256bits(64 位16进制)的字符串，所以要将每个4字节的数转换成8位的16进制字符串。
+```
+B = H1
+C = H2
+D = H3
+E = H4
+F = H5
+G = H6
+H = H7
+```
 
-##### 2.1.4. SHA-224 与SHA-256
+- **主循环**
 
-SHA-224 与SHA-256基本相同，除了8个初始值不同，SHA-224 输出时截掉H 值，得到最后的56位16进制字符串。SHA-512 与SHA-256结构是相同的，但是SHA-512所有数都是64位，SHA-512运行80次循环，SHA-512的初始值、常量值都是64位，SHA-512中偏移量和循环中的位移量也是不同的
+进行64次迭代计算，每次更新A, B, C, D, E, F, G, H的值：
 
+```
+for t in range(64):
+    S1 = (right_rotate(E, 6) ^ right_rotate(E, 11) ^ right_rotate(E, 25))
+    ch = (E & F) ^ ((~E) & G)
+    temp1 = (H + S1 + ch + K[t] + W[t]) & 0xFFFFFFFF
+    S0 = (right_rotate(A, 2) ^ right_rotate(A, 13) ^ right_rotate(A, 22))
+    maj = (A & B) ^ (A & C) ^ (B & C)
+    temp2 = (S0 + maj) & 0xFFFFFFFF
 
-##### 2.1.5个初始值不同
+    H = G
+    G = F
+    F = E
+    E = (D + temp1) & 0xFFFFFFFF
+    D = C
+    C = B
+    B = A
+    A = (temp1 + temp2) & 0xFFFFFFFF
+```
 
-SHA-384输出时截掉F、H两个值，得到最后的96位16进制字符串
+- **更新缓冲区**
 
+每轮操作后，将工作变量的值加到缓冲区变量中：
 
-##### 2.1.6. SHA-256 算法用C 代码实现
+```
+H0 = (H0 + A) & 0xFFFFFFFF
+H1 = (H1 + B) & 0xFFFFFFFF
+H2 = (H2 + C) & 0xFFFFFFFF
+H3 = (H3 + D) & 0xFFFFFFFF
+H4 = (H4 + E) & 0xFFFFFFFF
+H5 = (H5 + F) & 0xFFFFFFFF
+H6 = (H6 + G) & 0xFFFFFFFF
+H7 = (H7 + H) & 0xFFFFFFFF
+```
 
-````
+- **输出哈希值**
 
-#include<iostream>
-#include<string>
-using namespace std;
-#define shift(x, n) (((x) << (n)) | ((x) >> (32-(n))))//右移的时候，高位一定要补零，而不是补充符号位
-#define S0(x) ((shift(x, 25)) ^ (shift(x, 14)) ^ ((x) >> 3))
-#define S1(x) ((shift(x, 17)) ^ (shift(x, 19)) ^ ((x) >> 10))
+处理完所有消息块后，将八个缓冲区变量的值连接起来，得到最终的哈希值。
 
-#define Sigma0(x) ((shift(x, 30)) ^ (shift(x, 19)) ^ (shift(x, 10)))
-#define Sigma1(x) ((shift(x, 26)) ^ (shift(x, 21)) ^ (shift(x, 7)))
-#define Ma(x,y,z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
-#define Ch(x,y,z) (((x) & (y)) ^ ((~x) & (z)))
+**2.1.4. sha-256 源码**
 
-#define A 0x6a09e667
-#define B 0xbb67ae85
-#define C 0x3c6ef372
-#define D 0xa54ff53a
-#define E 0x510e527f
-#define F 0x9b05688c
-#define G 0x1f83d9ab
-#define H 0x5be0cd19
+```
+import struct
 
-//strBaye的长度
-unsigned int strlength;
-//A,B,C,D的临时变量
-unsigned int atemp;
-unsigned int btemp;
-unsigned int ctemp;
-unsigned int dtemp;
-unsigned int etemp;
-unsigned int ftemp;
-unsigned int gtemp;
-unsigned int htemp;
+def right_rotate(value, count):
+    return (value >> count) | (value << (32 - count)) & 0xFFFFFFFF
 
-static const uint32_t k[64] = {                                                                     
-    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b,
-    0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01,
-    0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7,
-    0xc19bf174, 0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc,
-    0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152,
-    0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
-    0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc,
-    0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
-    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819,
-    0xd6990624, 0xf40e3585, 0x106aa070, 0x19a4c116, 0x1e376c08,
-    0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f,
-    0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
-    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
+def sha256(message):
+    # 初始化缓冲区
+    H = [
+        0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
+        0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19
+    ]
+    
+    # 定义常量
+    K = [
+        0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5, 0x3956C25B, 0x59F111F1, 0x923F82A4, 0xAB1C5ED5,
+        0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3, 0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174,
+        0xE49B69C1, 0xEFBE4786, 0x0FC19DC6, 0x240CA1CC, 0x2DE92C6F, 0x4A7484AA, 0x5CB0A9DC, 0x76F988DA,
+        0x983E5152, 0xA831C66D, 0xB00327C8, 0xBF597FC7, 0xC6E00BF3, 0xD5A79147, 0x06CA6351, 0x14292967,
+        0x27B70A85, 0x2E1B2138, 0x4D2C6DFC, 0x53380D13, 0x650A7354, 0x766A0ABB, 0x81C2C92E, 0x92722C85,
+        0xA2BFE8A1, 0xA81A664B, 0xC24B8B70, 0xC76C51A3, 0xD192E819, 0xD6990624, 0xF40E3585, 0x106AA070,
+        0x19A4C116, 0x1E376C08, 0x2748774C, 0x34B0BCB5, 0x391C0CB3, 0x4ED8AA4A, 0x5B9CCA4F, 0x682E6FF3,
+        0x748F82EE, 0x78A5636F, 0x84C87814, 0x8CC70208, 0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2
+    ]
+    
+    # 消息填充
+    original_byte_len = len(message)
+    original_bit_len = original_byte_len * 8
+    message += b'\x80'
+    message += b'\x00' * ((56 - len(message) % 64) % 64)
+    message += struct.pack('>Q', original_bit_len)
+    
+    # 处理消息块
+    for i in range(0, len(message), 64):
+        W = list(struct.unpack('>16I', message[i:i+64]))
+        
+        # 扩展消息
+        for t in range(16, 64):
+            s0 = (right_rotate(W[t-15], 7) ^ right_rotate(W[t-15], 18) ^ (W[t-15] >> 3))
+            s1 = (right_rotate(W[t-2], 17) ^ right_rotate(W[t-2], 19) ^ (W[t-2] >> 10))
+            W.append((W[t-16] + s0 + W[t-7] + s1) & 0xFFFFFFFF)
+        
+        # 初始化变量
+        a, b, c, d, e, f, g, h = H
+        
+        # 主循环
+        for t in range(64):
+            S1 = (right_rotate(e, 6) ^ right_rotate(e, 11) ^ right_rotate(e, 25))
+            ch = (e & f) ^ ((~e
+```
 
-const char str16[]="0123456789abcdef";
-void mainLoop(unsigned int M[])
-{
-    unsigned int s0, maj, s1, ch, t;
+## 2.2. SHA-2 算法比较
 
-    unsigned int a = atemp;
-    unsigned int b = btemp;
-    unsigned int c = ctemp;
-    unsigned int d = dtemp;
-    unsigned int e = etemp;
-    unsigned int f = ftemp;
-    unsigned int g = gtemp;
-    unsigned int h = htemp;
+SHA-224 与SHA-256 基本相同，除了8个初始值不同，SHA-224 输出时截掉 H 值，得到最后的56位16进制字符串。SHA-512 与 SHA-256 结构是相同的，但是SHA-512 所有数都是 64位，SHA-512 运行80次循环，SHA-512的初始值、常量值都是 64 位，SHA-512 中偏移量和循环中的位移量也是不同的
 
-    for (unsigned int i = 0; i < 64; i++)
-    {
-        s0 = Sigma0(a);
-        maj = Ma(a, b, c);
-        s1 = Sigma1(e);
-        ch = Ch(e, f, g);
-        t1 = h + s1 + ch + k[i] + M[i];
+# 3. Sha-3
 
-        h = g;
-        g = f;
-        f = e;
-        e = d + t1;
-        d = c;
-        c = b;
-        b = a;
-        a = t1 + s0 + maj;
-    }
-    atemp=a+atemp;
-    btemp=b+btemp;
-    ctemp=c+ctemp;
-    dtemp=d+dtemp;
-    etemp=e+etemp;
-    ftemp=f+ftemp;
-    gtemp=g+gtemp;
-    htemp=h+htemp;
-}
-/*
-*填充函数
-*处理后应满足bits≡448(mod512),字节就是bytes≡56（mode64)
-*填充方式为先加一个1,其它位补零
-*最后加上64位的原来长度
-*/
-unsigned int* add(string str)
-{
-    unsigned int num=((str.length()+8)/64)+1;//以512位,64个字节为一组
-    unsigned int *strByte=new unsigned int[num*16];    //64/4=16,所以有16个整数
-    strlength=num*16;
-    for (unsigned int i = 0; i < num*16; i++)
-        strByte[i]=0;
-    for (unsigned int i=0; i <str.length(); i++)
-    {
-        strByte[i>>2]|=(str[i])<<((i%4)*8);//一个整数存储四个字节，i>>2表示i/4 一个unsigned int对应4个字节，保存4个字符信息
-    }
-    strByte[str.length()>>2]|=0x80<<(((str.length()%4))*8);//尾部添加1 一个unsigned int保存4个字符信息,所以用128左移
-    /*
-    *添加原长度，长度指位的长度，所以要乘8，然后是小端序，所以放在倒数第二个,这里长度只用了32位
-    */
-    strByte[num*16-2]=str.length()*8;
-    return strByte;
-}
-string changeHex(int a)
-{
-    int b;
-    string str1;
-    string str="";
-    for(int i=0;i<4;i++)
-    {
-        str1="";
-        b=((a>>i*8)%(1<<8))&0xff;   //逆序处理每个字节
-        for (int j = 0; j < 2; j++)
-        {
-            str1.insert(0,1,str16[b%16]);
-            b=b/16;
-        }
-        str+=str1;
-    }
-    return str;
-}
-string getSHA1(string source)
-{
-    atemp=A;    //初始化
-    btemp=B;
-    ctemp=C;
-    dtemp=D;
-    etemp=E;
-    ftemp=F;
-    gtemp=G;
-    htemp=H;
-    unsigned int *strByte=add(source);
-    for(unsigned int i=0;i<strlength/16;i++) //512bits 数据分段
-    {
-        unsigned int num[80];
-        unsigned int j;
-        for(j=0;j<16;j++)
-            num[j]=strByte[i*16+j]; //得到512bits 数据
+SHA-3（Secure Hash Algorithm 3）是一种加密哈希函数，是由Keccak算法家族中的成员经过选拔而成为标准的。它由NIST（National Institute of Standards and Technology）在2015年发布，成为SHA-2之后的另一种安全哈希算法标准。
 
-        for(j=16;j<64;j++)
-            num[j]=num[j-16] + S0(num[i-15]) + num[i-7] + S1(num[i-2]); //扩展到64个
-        mainLoop(num); //进入主循环
-    }
-    return changeHex(atemp).append(changeHex(btemp)).append(changeHex(ctemp))
-              .append(changeHex(dtemp)).append(changeHex(etemp)).append(changeHex(ftemp))
-              .append(changeHex(gtemp)).append(changeHex(htemp));
-}
-unsigned int main()
-{
-    string ss;
-//    cin>>ss;
-    string s=getSHA1("abc");
-    cout<<s;
-    return 0;
-}
+## 3.1. SHA-3 产生的背景
 
-````
+SHA-3是为了应对潜在的SHA-2安全性问题而开发的，尽管目前SHA-2仍然被认为是安全的。SHA-3的设计考虑了与之前的SHA算法不同的结构，以提供额外的安全保障。
 
+## 3.2. Keccak算法
 
-### 3. Sha-3
-
-SHA-3 算法是第三代标准的哈希函数，基于 Keccak 算法实现。与之前的哈希算法有所不同，SHA-3 算法是基于置换 ( permutation-based ) 的加密函数。
-
-#### 3.1. Sha-3算法流程
+SHA-3基于Keccak算法，后者由Guido Bertoni、Joan Daemen、Michaël Peeters和Gilles Van Assche设计。Keccak采用了一种称为"海绵结构"（sponge construction）的设计，这种设计使得它在安全性和性能上都有独特的优势。
 
 输出长度为 X 位的 SHA-3 哈希函数表示为：SHA3-X(M)
 
 下面以输出长度为 256 位的函数为例。标准中，输出长度为 256 位的 SHA-3 函数的表示为SHA3-256(M),其中 M 为需要进行哈希的数据。对数据哈希的过程主要基于海绵结构 ( sponge construction ) 进行，因此先介绍一下海绵结构。
 
-海绵结构
+海绵结构：海绵结构能够进行数据转换，将任意长的输入转换成任意长的输出。下图是一个海绵结构的示意图。
 
-海绵结构能够进行数据转换，将任意长的输入转换成任意长的输出。下图是一个海绵结构的示意图。
-
-![image](https://user-images.githubusercontent.com/19474106/119256665-61abde80-bbf4-11eb-8af6-700be137048a.png)
-
+![图像](../img/hash_3.2.png)
 
 如图所示，海绵结构包含 3 个重要的组成部分：
 
@@ -672,7 +555,7 @@ SHA-3 算法是第三代标准的哈希函数，基于 Keccak 算法实现。与
 
 一个参数称为比率 ( rate )，记作 r，是指每轮要吸收的 长度为 b 的串中数据的长度，剩余部分称为容量，记为 c，因此，有 b = r + c。
 
-一个填充 ( padding ) 函数，记作 pad(x,,m)，返回将长度为 m 的串填充为 x 的整数倍长度的串。例如 pad(5,2)=010，指将长度为 2 的串填充为 5 的整数倍长度，需要添加一个长度为 3 的串，任意长为 3 的串均可，本例中返回值为 010，其长度为 3。
+一个填充 ( padding ) 函数，记作 pad(x, m)，返回将长度为 m 的串填充为 x 的整数倍长度的串。例如 pad(5,2)=010，指将长度为 2 的串填充为 5 的整数倍长度，需要添加一个长度为 3 的串，任意长为 3 的串均可，本例中返回值为 010，其长度为 3。
 
 给定上述组成后，可以对数据进行操作并得到映射结果。形式化定义如下：
 
@@ -680,142 +563,191 @@ SPONGE[f,pad,r]
 
 基于该海绵结构可以定义海绵函数，用于将输入转换成指定长度的串，因此，函数有两个参数：1. 输入串 N，2. 输出长度 d。函数定义如下：
 
-SPONGE[f,pad,r](N,d)
+SPONGE[f,pad,r]
 
-下面根据图，简要说明海绵函数的执行流程：
+## 3.3. SHA-3 的特点
 
-1.首先对输入 N 进行填充，使其长度为 r 的整数倍，结果为 P = N || pad(r, len(N)), “||” 表示串连接。
+- **安全性**：SHA-3提供与SHA-2类似的安全级别，但由于其不同的结构，提供了一种额外的安全性保障。
+- **可变输出长度**：SHA-3允许生成可变长度的哈希值，虽然常见的长度是224, 256, 384和512位。
+- **抗攻击性**：基于海绵结构，SHA-3具有很高的抗预映射攻击（preimage attack）、第二预映射攻击（second preimage attack）和碰撞攻击（collision attack）能力。
+- **灵活性**：SHA-3不仅可以用作哈希函数，还可以应用于消息认证码（MAC）、伪随机数生成器（PRNG）等领域。
 
-2.记 n =len(P)/r，将 P 分成 n 段，记为 P = P0||P2|| ...Pn-1, 每段长度为 rr。
+## **3.4.** SHA-3 各个变种
 
-3.定义 S = 0^b 表示长度为 b 的 0 串，这个 S 也被称为状态，之后进行介绍。
+SHA-3包括以下几种变种，主要区别在于哈希输出的长度：
 
-4.定义 i 从 0 到 n−1，对 S 依次进行转换，S =f(S⊕(Pi∣∣0^c))，上述过程称为吸收 (absorbing) 过程。
+- **SHA3-224**：224位输出长度
+- **SHA3-256**：256位输出长度
+- **SHA3-384**：384位输出长度
+- **SHA3-512**：512位输出长度
 
-5.定义 Z 为空串。
+此外，SHA-3还包括两个额外的变种：
 
-6.Z = Z∣∣Truncr(S)，其中 Truncr(S) 指 S 前 r 个字符组成的串。
+- **SHAKE128**：可变输出长度的哈希函数，基于SHA3-128
+- **SHAKE256**：可变输出长度的哈希函数，基于SHA3-256
 
-7.如果此时 d≤len(Z)，返回 Truncd(Z)
+## **3.5. SHA-3 算法流程**
 
-8.令 S=f(S)，返回步骤 6。
+SHA-3（基于Keccak算法）的流程主要包括以下几个阶段：初始化、吸收（absorb）、挤出（squeeze）和填充（padding）。SHA-3采用的是海绵函数结构（sponge construction），其具体步骤如下：
 
+**3.5.1. 初始化**
 
+SHA-3 的状态是一个固定大小的比特数组，称为 **state**，其大小为 𝑏=1600 比特。状态 **state** 被初始化为全零。
 
-#### KECCAK 海绵函数
+**3.5.2. 填充（Padding）**
 
-定义一个海绵结构需要指明海绵结构中的三个组成成分
+输入消息被填充以满足内部块大小的要求。SHA-3使用了一种称为“multi-rate padding”的填充方法，即将消息填充到满足特定条件：
 
-1.一个对数据进行等长映射的函数 f。
+- 在消息末尾添加一个比特 **1**。
+- 添加若干个比特 **0**，使得消息长度加1之后能整除 **r**。
+- 在最后添加一个比特 **1**，使得总长度达到 **r** 的倍数。
 
-2.一个参数称为比率 r。
+这里的**r**（rate）是吸收阶段每次处理的比特数。填充后的消息长度为**r**的倍数。
 
-3.一个填充 ( padding ) 函数，记作 pad(x,m)。
+**3.5.3. 吸收阶段（Absorb Phase）**
 
-SHA-3 中使用的 KECCAK 海绵函数的三个组件形式如下：
+填充后的消息被分成多个块，每个块大小为 **r** 比特。对于每一个块，将其与当前状态的前 **r** 比特进行异或（XOR）操作，然后应用 Keccak 的内部置换函数 **f**。
 
-1.映射函数 KECCAK-p[b,nr](S)，将长度为 b 的串 S，经过 nr 轮转换输出为长度为 b 的结果，也被称为 KECCAK-p 置换函数。该函数之后会详细说明。
+具体步骤：
 
-2.比率 r 根据输出长度不同进行调整。
+- 将当前块的比特与状态的前**r**比特进行异或操作。
+- 将置换函数**f**应用于整个状态。
 
-3.填充函数为 pad10∗1(x,m)，除了返回将长度为 m 的串填充为 x 的整数倍长度的串外，还保证返回的串满足表达式 10∗1 形式。
+这个过程重复进行，直到所有消息块都被处理完毕。
 
+**3.5.4. 挤出阶段（Squeeze Phase）**
 
+在吸收阶段完成后，进入挤出阶段，生成所需长度的哈希值。输出哈希值也是通过Keccak的内部置换函数**f**处理状态并从中提取**r**比特的输出。
 
-#### KECCAK-p 置换
+**3.5.5.具体步骤：**
 
-KECCAK-p 置换将输入串进行多轮重新排列得到长度相同的输出串。设输入串 S 长度为 b，置换进行 nr 轮重新排列，则进行的 KECCAK-p 置换函数记为
+- 从状态中提取前**r**比特，作为输出比特。
+- 应用置换函数**f**于当前状态。
+- 重复以上步骤直到生成所需长度的输出哈希值。
 
+**Keccak 置换函数 f**
 
-![image](https://user-images.githubusercontent.com/19474106/119256679-75574500-bbf4-11eb-9db3-732ca3dbe4f9.png)
+Keccak置换函数**f**包括多个轮次（rounds），每轮都由五个步骤组成：θ（Theta）、ρ（Rho）、π（Pi）、χ（Chi）和ι（Iota）。
 
+-  θ（Theta）步
 
-其中，b∈{25,50,100,200,400,800,1600}
+💡💡对状态进行按位操作，使得每一比特都受到其他比特的影响。这一步涉及全局性数据混合。
 
+-  ρ（Rho）步
 
-置换函数也可以认为是在进行状态转移，前面提到，这个函数的输入 S 又称为状态，KECCAK-p 置换，就是对 S 进行状态转移。下面简要介绍一下状态的概念。
+💡💡进行循环移位操作，改变每个比特的位置。
 
-状态 ( state )
+- π（Pi）步
 
+💡💡将状态比特重新排列，进一步混合比特的位置。
 
-一个一直被更新的位数组称为一个状态。一个状态可以表示成一个位串或一个状态数组。位串就是指状态的二进制串，记为 S，长度记为 b；状态数组将状态表示为一个 5×5×w 的三维数组，其中 w = b/25，记为 A。S 和 AA都表示状态，可以互相转换。
+-  χ（Chi）步
 
-状态数组中的每一位可以用 A[x, y, z]表示，状态数组的坐标系统如下所示：
+💡💡进行非线性转换，进一步增加混合的复杂度。
 
-![image](https://user-images.githubusercontent.com/19474106/119256687-7c7e5300-bbf4-11eb-9503-930b84c9532e.png)
+- ι（Iota）步
 
+💡💡引入轮常数，确保每一轮操作都是不同的。
 
-其中，x，y 方向都以中心点为原点。下面是状态数组中不同子数组的命名。
+这些步骤的结合确保了每一轮置换函数都能显著改变状态，从而增强算法的安全性。
 
-![image](https://user-images.githubusercontent.com/19474106/119256690-856f2480-bbf4-11eb-870e-a2137dbfc2e3.png)
+# 四. Blake 和 Blake2
 
+BLAKE（及其后续版本 BLAKE2）是一种快速且安全的哈希算法，参与了SHA-3竞赛并成为了SHA-3的五个决赛选手之一。
 
-阶段映射 ( step mappings )
-SHA-3 标准中共有 5 个映射函数，可以对状态数组 A 进行不同的排列，下面简要进行介绍。
+BLAKE2 是一种快速、安全的哈希函数，是对 BLAKE 算法的改进。BLAKE2 于 2012 年发布，其设计目标是提供比 MD5、SHA-1 和 SHA-2 更高的安全性和更快的速度，同时保持高度的灵活性和简便性。
 
-θ(A)，对 columncolumn 进行重排列。
-
-ρ(A)，对 lanelane 进行重排列。
-
-π(A)，对 sliceslice 进行重排列。
-
-χ(A)，对 rowrow 进行重排列。
-
-ι(A,ir)，对 A[0,0,z] 部分进行重排列。
-
-对于 nr 轮转换，每一轮使用函数 Rnd 进行转换：
-
-![image](https://user-images.githubusercontent.com/19474106/119256694-8dc75f80-bbf4-11eb-8fc1-f943f80da618.png)
-
-
-置换过程
-置换过程总结如下：
-
-![image](https://user-images.githubusercontent.com/19474106/119256699-94ee6d80-bbf4-11eb-8cd2-825c2518629d.png)
-
-
-定义 SHA-3
-
-SHA-3 中的哈希函数基于 Keccak 海绵结构实现，并将一些参数设置为常量：
-
-设置 KECCAK-p 置换输入长度为 1600 bit，也是状态的长度。
-
-设置 KECCAK-p 置换进行 24 轮。
-
-参数 r = 1600 - c，且其值取决于需要输出的哈希结果的长度。因此，SHA-3 中使用的海绵函数定义为：
-
-![image](https://user-images.githubusercontent.com/19474106/119256708-9e77d580-bbf4-11eb-864f-9d4d53be89c6.png)
-
-
-参数 c 取决于输出长度。基于上述定义，SHA-3 哈希函数定义如下：
-
-![image](https://user-images.githubusercontent.com/19474106/119256714-a46db680-bbf4-11eb-8b16-2e156ab84375.png)
-
-其中，c 被设为输出长度的 2 倍，输入串还需要添加后缀 01 作为海绵函数的输入。SHA-3 系列函数最终分别得到给定长度的哈希结果。
-
-
-## 四. Blake 和 Blake2
-
-我们都知道，哈希算法 (Hash Algorithm) 是将任意长度的数据映射为固定长度数据的算法，也称为消息摘要。一般情况下，哈希算法有两个特点, 一是原始数据的细微变化（比如一个位翻转）会导致结果产生巨大差距；二是运算过程不可逆，理论上无法从结果还原输入数据。因此，哈希算法主要用于数据完整性校验和加密/签名。
-
-哈希算法的安全性就在于碰撞难易度，即已知结果，构建出具有相同结果的输入数据的难易度。
-
-常见的哈希算法有 MD5, SHA-1, SHA-2, SHA-3。其中 MD5 已经可以在 2^21 复杂度（在主流智能手机上只需30秒）内完成碰撞，谷歌也于17年早些时候在 2^64 复杂度（约 110 GPU年的计算量）内完成了第一次 SHA-1 碰撞。至此，MD5 和 SHA-1 已经在安全领域被废弃。当前除了 SHA-2，SHA-3 之外，还有另外一个哈希算法系列可供选择，那就是 BLAKE，BLAKE2 系列比常见的 MD5，SHA-1，SHA-2，SHA-3 更快，同时提供不低于 SHA-3 的安全性。BLAKE2 系列从著名的 ChaCha 算法衍生而来，有两个主要版本 BLAKE2b（BLAKE2）和 BLAKE2s。
+BLAKE2 系列从著名的 ChaCha 算法衍生而来，有两个主要版本 BLAKE2b（BLAKE2）和 BLAKE2s。
 
 BLAKE2b 为 64 位 CPU（包括 ARM Neon）优化，可以生成最长64字节的摘要；BLAKE2s 为 8-32 位 CPU 设计，可以生成最长 32 字节的摘要。
 
 二者的衍生版 BLAKE2bp 和 BLAKE2sp 可以进行多核并行计算，在保持相同安全性的前提下，进一步提升计算速度。此外，BLAKE2 系列有一个特殊的变种，BLAKE2x，可以生成最多 4GiB 的“摘要”，可以用于 KDF（密钥派生）和 DRBG（固定随机数序列）。
 
-BLAKE2 算法基于 BLAKE 算法，2012年被提出，也就是说在 Blake2 之前 Blake 系列算法已经产生。BLAKE 算法于2008年提出，它包含两个版本，一种基于32位word用于产生最长256位的哈希结果，一种基于64位word用于产生最长512位的哈希结果，BLAKE算法核心操作是不断地将8个散列中间结果和16个输入word进行组合，从而产生下一轮组合的8个中间结果。按照最终截断的哈希长度，BLAKE-256和BLAKE-224使用32位字分别产生256位和224位的哈希结果（也称消息摘要），而BLAKE-512和BLAKE-384使用64位字并产生512位和384位哈希结果。
+BLAKE2 算法基于 BLAKE 算法，2012年被提出，也就是说在 Blake2 之前 Blake 系列算法已经产生。BLAKE 算法于2008年提出，它包含两个版本，一种基于32位word用于产生最长256位的哈希结果，一种基于 64 位 word用于产生最长512位的哈希结果，BLAKE算法核心操作是不断地将8个散列中间结果和16个输入word进行组合，从而产生下一轮组合的8个中间结果。按照最终截断的哈希长度，BLAKE-256 和BLAKE-224 使用32位字分别产生256位和224位的哈希结果（也称消息摘要），而BLAKE-512和BLAKE-384使用64位字并产生512位和384位哈希结果。
 
-blake源码可以参考：https://github.com/veorq/BLAKE
+## 1. blake 系列算法特点
 
-blake2 的源码可以参考：https://github.com/BLAKE2/BLAKE2
+**高效性能**
 
+BLAKE2 比 SHA-2（如 SHA-256 和 SHA-512）更快，同时在现代 CPU 上的性能通常优于 MD5 和 SHA-1。BLAKE2 的设计充分利用了现代处理器的特性，使其在软件实现中非常高效。
 
+**高安全性**
 
+BLAKE2 提供了与 SHA-3 相媲美的安全性。它具有以下特性：
 
+- **抗碰撞攻击**：很难找到两个不同的输入使得它们的哈希值相同。
+- **抗预映射攻击**：很难找到一个给定哈希值对应的原始输入。
+- **抗第二预映射攻击**：很难找到与给定输入具有相同哈希值的另一个输入。
 
+**可变长度输出**
 
+BLAKE2 可以生成任意长度的哈希值，从 1 比特到 512 比特。这使得它在许多应用中非常灵活。
 
+**简单易用**
 
+BLAKE2 的设计和实现都相对简单，这有助于降低实现中的错误风险。它还提供了多种变种，以满足不同需求：
+
+- **BLAKE2b**：适用于 64 位平台，输出长度可达 512 比特。
+- **BLAKE2s**：适用于 32 位平台，输出长度可达 256 比特。
+
+**内置特性**
+
+BLAKE2 集成了多种常用功能，这使得它在许多应用中更加便捷：
+
+- **密钥哈希（Keyed Hashing）**：可以使用密钥生成消息认证码（MAC）。
+- **盐值（Salted Hashing）**：允许使用盐值增强哈希的安全性。
+- **个性化（Personalized Hashing）**：可以根据应用需求定制哈希值。
+
+## 2. bake 和 blake2 源码
+
+blake源码可以参考：
+
+https://github.com/veorq/BLAKE
+
+blake2 的源码可以参考：
+
+https://github.com/BLAKE2/BLAKE2
+
+## 3. **blake2 应用场景**
+
+由于其高效性和安全性，BLAKE2 被广泛应用于各种领域，包括但不限于：
+
+- **密码学应用**：如数字签名、消息认证码、随机数生成等。
+- **数据完整性验证**：如文件校验、数据备份验证等。
+- **区块链和加密货币**：BLAKE2 被许多区块链项目用作哈希函数。
+
+# 五.Poseidon 算法
+
+Poseidon 是一种现代加密哈希函数，设计用于零知识证明（Zero-Knowledge Proofs, ZKPs）等高级密码学应用。它由研究人员 Benedikt Bunz, Dario Fiore, Iddo Bentov, and Pavel Vasin 等人设计。Poseidon 的设计目标是提供一种高效且安全的哈希算法，特别适合用于 zk-SNARKs 和 zk-STARKs 等 ZKP 系统中。
+
+## 1. Poseidon 算法的特点
+
+- **针对零知识证明优化**： Poseidon 设计时考虑了在零知识证明系统中的应用，优化了哈希计算的效率，特别是减少了算术电路中的门数量（gate count）。
+- **基于加密结构**： Poseidon 采用 Sponge 结构，这种结构在密码学中广泛应用于构建哈希函数和伪随机数生成器。Sponge 结构由两个主要阶段组成：吸收（absorb）和挤出（squeeze）。
+- **高效性**： Poseidon 的设计特别注重计算效率，适合在资源受限的环境中运行，比如区块链中的智能合约或零知识证明的证明生成过程。
+- **灵活性**： Poseidon 可以根据不同的应用需求进行配置，支持不同的安全参数和性能优化。
+- **安全性**： Poseidon 提供了较高的安全性，抗碰撞攻击、预映射攻击和第二预映射攻击，满足现代密码学的安全需求。
+
+## 2. Poseidon 的构造
+
+Poseidon 的具体实现涉及复杂的数学构造，包括有限域上的非线性变换和线性层的组合。以下是 Poseidon 的基本构造概述：
+
+- **状态初始化**： Poseidon 初始化一个状态向量，状态的大小通常取决于安全参数和哈希输出的长度。
+- **非线性层（S-Box）**： Poseidon 在状态向量的每个元素上应用一个非线性变换（通常是有限域上的幂操作），这种变换称为 S-Box。
+- **线性层**： Poseidon 应用一个线性变换，将状态向量的元素混合。通常，这个线性变换是通过一个矩阵乘法实现的。
+- **轮函数（Round Function）**： 非线性层和线性层组合成一个轮函数。Poseidon 多次应用轮函数，将输入数据充分混合，确保输出哈希值的安全性。
+- **Sponge 结构**： Poseidon 使用 Sponge 结构处理输入数据。首先在吸收阶段将输入数据分块处理并更新状态向量，然后在挤出阶段从状态向量中提取哈希值。
+
+## 3. Poseidon 的应用
+
+- **区块链**： Poseidon 因其高效性和安全性，被认为是区块链系统中实现零知识证明的理想哈希函数。例如，Poseidon 可以用于生成 zk-SNARKs 和 zk-STARKs 中的证明和验证过程。
+- **隐私保护**： Poseidon 可以用于保护数据隐私，通过零知识证明确保数据的完整性和保密性而无需透露实际数据内容。
+- **智能合约**： Poseidon 可以集成到区块链智能合约中，提供高效的哈希计算和验证功能，增强智能合约的安全性和性能。
+
+# 六. 总结
+
+我们都知道，哈希算法 (Hash Algorithm) 是将任意长度的数据映射为固定长度数据的算法，也称为消息摘要。一般情况下，哈希算法有两个特点, 一是原始数据的细微变化（比如一个位翻转）会导致结果产生巨大差距；二是运算过程不可逆，理论上无法从结果还原输入数据。因此，哈希算法主要用于数据完整性校验和加密/签名。
+
+哈希算法的安全性就在于碰撞难易度，即已知结果，构建出具有相同结果的输入数据的难易度。
+
+常见的哈希算法有 MD5, SHA-1, SHA-2, SHA-3。其中 MD5 已经可以在 2^21 复杂度（在主流智能手机上只需30秒）内完成碰撞，谷歌也于17年早些时候在 2^64 复杂度（约 110 GPU年的计算量）内完成了第一次 SHA-1 碰撞。至此，MD5 和 SHA-1 已经在安全领域被废弃。当前除了 SHA-2，SHA-3 之外，还有另外一个哈希算法系列可供选择，那就是 BLAKE，BLAKE2 系列比常见的 MD5，SHA-1，SHA-2，SHA-3 更快，同时提供不低于 SHA-3 的安全性。对于区块链中的零知识证明系统，Poseidon 是目前应用的最广泛的算法。
