@@ -128,7 +128,10 @@ PKI 将硬件系统、软件系统及安全策略结合形成一个完整的安�
 
 PKI 系统由认证机构 CA、注册机构 RA、数字证书库、密钥备份及恢复系统、证书撤销系统、密钥更新机制等组成。
 
-![enter image description here](https://images.gitbook.cn/18f163f0-4b84-11e9-96f1-356961e976e6)
+.：
+![.：
+](https://github.com/guoshijiang/cryptography/blob/master/img/pki/pki1.jpeg)
+
 
 认证机构 CA：它是数字证书的颁布机关，也是 PKI 体系的核心，是具有权威性、公正性的第三方机构。认证机构  CA  首先确认申请证书的申请用户身份，然后将要颁发的证书的主体与公钥捆绑在一起，生成数字证书，从而使申请用户与一对公钥和私钥建立对应关系。
 
@@ -163,7 +166,10 @@ CA 是 PKI 体系的关键组成部分，向用户颁发和管理各种应用的
 
 CA 的组成部分，以及各部分的主要功能：
 
-![enter image description here](https://images.gitbook.cn/85244b80-4b86-11e9-8269-8dda0475a431)
+.：
+![.：
+](https://github.com/guoshijiang/cryptography/blob/master/img/pki/pki2.jpeg)
+
 
 **证书签发系统**
 
@@ -191,20 +197,32 @@ PKI 的信任模型有以下五种类型。
 
 严格层次信任模型，模型中所有结点都信任唯一的根 CA，每个结点必须保存根 CA 中心的公钥，从根 CA 到认证结点仅有一条信任路径。当用户之间需要通信时，必须先通过根 CA 来验证双方的公钥证书。这样的信任模型适用于独立、分层的企业应用，难以用于不同组织的企业之间。其优点是证书路径是单向的、路径短，易于扩展。缺点是如果根 CA 发生故障，整个信任模型将被毁坏，而且目前还没有较好的技术来解决这个难题。 
 
-![enter image description here](https://images.gitbook.cn/9cce2ba0-4b8d-11e9-8269-8dda0475a431)
+.：
+![.：
+](https://github.com/guoshijiang/cryptography/blob/master/img/pki/pki3.jpeg)
+
 
 网状信任模型，信任模型中有许多个 CA，任意一个 CA 都有权对其它的 CA进行认证，任意两个 CA 可以相互认证。网状信任模型适用于没有层级关系或动态变化的通信机构之间，但是对于特定的 CA 不一定能适合认证某一个 CA，且两个 CA 之间的信任路径可能会有许多条，所以构建信任路径要比层次模型复杂，在构建信任路径时要应用优化措施。网状信任模型中的 CA 都是独立的，没有级别之分，没有根 CA，当信任传递的需求量增大时，可以随时新增多个 CA，通过在交叉认证关系来实现信任路径的增多。其优点是每个根 CA 都是独立的，某个根 CA 的安全性被破坏不会影响到其它根 CA 的相互信任，相互认证的路径的灵活的可变的。其缺点是从用户端到根 CA 的认证路径是不确定的，有多种可选择的路径，因此寻址相对困难些。选择一个正确的路径后，放弃其它可选择的路径，有时可能陷入无止境的循环寻址路径里。 
 
-![enter image description here](https://images.gitbook.cn/a6432140-4b8d-11e9-8269-8dda0475a431)
+.：
+![.：
+](https://github.com/guoshijiang/cryptography/blob/master/img/pki/pki4.jpeg)
+
 混合信任模型，就是将层次、网状信任等模型结合在一起。在这种信任模型中，每一个层次结构都有根 CA，任意两个根 CA 之间必须建立交叉认证，且有一个对应的交叉证书，用于两个层次结构之间的相互认证。
 
-![enter image description here](https://images.gitbook.cn/7a1bc3f0-4b8e-11e9-9703-f9a332732a5a)
+.：
+![.：
+](https://github.com/guoshijiang/cryptography/blob/master/img/pki/pki5.jpeg)
+
 
 如果不是层次结构的根 CA 之间的交叉认证关系不复杂，可以在两者之间构建简单的认证路径。但是，在混合信任模型中，每新增一个域，域和域之间建立的交叉认证书的数量是以平方的数量级递增的，当应用实体需要大规模的扩展域时，根 CA 之间的交叉认证会越来越大和复杂。
 
 信任列表模型，这种模型向客户端系统提供可信任根 CA 的公开密钥，认证证书直接或者间接地与可信任根 CA 相连。这种模型应用的实例，如我们所用的浏览器中下载应用的各种证书。这种模型的优点是相互操作的步骤简单和方便，但是存在许多不容忽视的安全问题，举个常见的实例，我们使用的浏览器会事先安装一些可信任根 CA 的公钥，用户就会默认这些公钥都是可信任的，但是如果其中有一个根 CA 是这安全的，整个浏览器的安全性将遭到破坏。当一个根 CA 的公开密钥的安全性已经被破坏，或者根 CA 的公开密钥所对应的私有密钥已经被泄露，我们是无法将数以万计的浏览器废止已被破坏的根 CA 的密钥的。
 
-![enter image description here](https://images.gitbook.cn/4b92f700-4b8f-11e9-9703-f9a332732a5a)
+.：
+![.：
+](https://github.com/guoshijiang/cryptography/blob/master/img/pki/pki6.jpeg)
+
 
 #### CA 的功能
 
@@ -228,7 +246,10 @@ PKI 的信任模型有以下五种类型。
 
 随着电子信息技术的快速发展，信息安全问题得到了人们重视，其中 PKI 技术可以依据多个计算机用户的需求提供多样的安全服务，从而使计算机在具体应用过程中的真实性、完整性、机密性等多方面的优势能够得到保障，促进计算机技术的发展，使其能够更好的为人们服务。目前流行的区块链项目大多都使用到了 PKI 技术去对用户进行认证，例如 Hyperledger Fabric、SimpleChain、ImcoreChain 等。下面是一个很常见的区块链的项目架构的设计图
 
-![enter image description here](https://images.gitbook.cn/88eb2970-4b84-11e9-9703-f9a332732a5a)
+.：
+![.：
+](https://github.com/guoshijiang/cryptography/blob/master/img/pki/pki7.jpeg)
+
 
 我们都知道，CA 是 PKI 的核心，上图中的 CA 实际上就是使用 PKI 体系搭建的一个权威证书服务中心服务。
 
