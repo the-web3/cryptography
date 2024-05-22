@@ -712,11 +712,9 @@ Benaloh 的可验证密明共享方案也是建立在 Shamir 的密朗共享方�
 		}
 	}
 ```
-#### 6.4 代码的目录结构
+#### 6.4 代码库
 
-![enter image description here](https://images.gitbook.cn/7c6405f0-3e4b-11e9-a98d-5dc2d0f56a42)
-
-如果有问题，请直接联系我！邮箱：`guoshijiang2012@163.com`或者`20123762@s.hlju.edu.cn`
+https://github.com/guoshijiang/beeKey_java
 
 
 
